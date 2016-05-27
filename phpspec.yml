@@ -1,0 +1,6 @@
+suites:
+    app_suite:
+        namespace: GkCrawler
+        psr4_prefix: GkCrawler
+        src_path: app
+        spec_prefix: spec

@@ -2,8 +2,12 @@
 
 namespace GkCrawler\Console\Commands;
 
+use GkCrawler\Crawler\Crawler;
+use GkCrawler\Crawler\SourceCollection;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
+use GkCrawler\Model\Source as Model;
+use GkCrawler\Crawler\Sources\Kauffland as Source;
 
 class TestCommand extends Command
 {
@@ -38,24 +42,15 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $client = new Client();
-        $res = $client->request('POST', 'http://www.kaufland.ro/Storefinder/finder', [
-            'form_params' => [
-                'filtersettings' => '{"filtersettings":{"area":"58.08160399630535,89.67073949218752,27.534010082237103,-36.89176050781248"},"location":{"latitude":44.7829402295756,"longitude":26.38948949218752},"clienttime":"20160526210443"}',
-                'loadStores' => 'true',
-                'locale' => 'RO'
-            ]]);
-        echo $res->getStatusCode();
-// 200
-        echo $res->getBody();
+        $collection = new SourceCollection;
 
-// {"type":"User"...'
+        $dbSources = Model::All()->toArray();
 
-// Send an asynchronous request.
-//        $request = new \GuzzleHttp\Psr7\Request('GET', 'http://httpbin.org');
-//        $promise = $client->sendAsync($request)->then(function ($response) {
-//            echo 'I completed! ' . $response->getBody();
-//        });
-//        $promise->wait();
+        foreach($dbSources as $dbSource) {
+            $source = new Source($dbSource, new  );
+            $collection->add($source);
+        }
+
+        (new Crawler($collection))->run(new Client);
     }
 }
