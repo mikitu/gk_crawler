@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace GkCrawler\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use GkCrawler\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class PasswordController extends Controller

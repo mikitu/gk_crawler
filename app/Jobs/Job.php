@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace GkCrawler\Jobs;
 
 use Illuminate\Bus\Queueable;
 

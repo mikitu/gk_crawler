@@ -151,10 +151,10 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        GkCrawler\Providers\AppServiceProvider::class,
+        GkCrawler\Providers\AuthServiceProvider::class,
+        GkCrawler\Providers\EventServiceProvider::class,
+        GkCrawler\Providers\RouteServiceProvider::class,
 
     ],
 

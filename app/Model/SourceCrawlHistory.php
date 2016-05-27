@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace GkCrawler\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +24,6 @@ class SourceCrawlHistory extends Model
      */
     public function source()
     {
-        return $this->hasOne('App\Source');
+        return $this->hasOne('GkCrawler\Source');
     }
 }
