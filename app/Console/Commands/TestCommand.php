@@ -4,6 +4,7 @@ namespace GkCrawler\Console\Commands;
 
 use GkCrawler\Crawler\Crawler;
 use GkCrawler\Crawler\SourceCollection;
+use GkCrawler\Crawler\SourceFactory;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 use GkCrawler\Model\Source as Model;
@@ -47,7 +48,7 @@ class TestCommand extends Command
         $dbSources = Model::All()->toArray();
 
         foreach($dbSources as $dbSource) {
-            $source = new Source($dbSource, new  );
+            $source = SourceFactory::create($dbSource['name'], $dbSource );
             $collection->add($source);
         }
 

@@ -24,6 +24,6 @@ class SourceCrawlHistory extends Model
      */
     public function source()
     {
-        return $this->hasOne('GkCrawler\Source');
+        return $this->hasOne('GkCrawler\Model\Source');
     }
 }

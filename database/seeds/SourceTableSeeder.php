@@ -16,7 +16,7 @@ class SourceTableSeeder extends Seeder
             'loadStores' => 'true',
             'locale' => 'RO',
         ];
-        $model = new App\Model\Source();
+        $model = new GkCrawler\Model\Source();
         $model->name = 'Kauffland';
         $model->url='http://www.kaufland.ro/Storefinder/finder';
         $model->data = serialize($data);
