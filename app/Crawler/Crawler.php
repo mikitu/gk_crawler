@@ -1,8 +1,10 @@
 <?php
 
 namespace GkCrawler\Crawler;
-use GkCrawler\Crawler\SourceCollection;
+use GkCrawler\Crawler\OutputInterface;
 use GuzzleHttp\Client;
+use Illuminate\Console\Command;
+
 class Crawler
 {
     /**
@@ -21,11 +23,14 @@ class Crawler
 
     /**
      * @param Client $client
+     * @param OutputInterface $output
      */
-    public function run(Client $client)
+    public function run(Client $client, OutputInterface $output)
     {
         foreach ($this->sources as $source) {
+            $output->info("Start: " . $source->getName());
             $source->run($client);
+            $output->info("Done: " . $source->getName());
         }
     }
 

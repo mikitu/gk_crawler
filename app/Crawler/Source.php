@@ -68,4 +68,8 @@ abstract class Source implements SourceInterface
      */
     public abstract function save(array $item);
 
+    public function getName()
+    {
+        return $this->sourceData['name'];
+    }
 }

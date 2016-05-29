@@ -3,21 +3,21 @@
 namespace GkCrawler\Console\Commands;
 
 use GkCrawler\Crawler\Crawler;
+use GkCrawler\Crawler\OutputInterface;
 use GkCrawler\Crawler\SourceCollection;
 use GkCrawler\Crawler\SourceFactory;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 use GkCrawler\Model\Source as Model;
-use GkCrawler\Crawler\Sources\Kauffland as Source;
 
-class TestCommand extends Command
+class CrawlerCommand extends Command implements OutputInterface
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'crawler:run';
 
     /**
      * The console command description.
@@ -52,6 +52,6 @@ class TestCommand extends Command
             $collection->add($source);
         }
 
-        (new Crawler($collection))->run(new Client);
+        (new Crawler($collection))->run(new Client, $this);
     }
 }
