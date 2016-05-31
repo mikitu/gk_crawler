@@ -26,6 +26,7 @@ use seeds\ds\MetroSlovakia;
 use seeds\ds\MetroSpain;
 use seeds\ds\MetroTurkey;
 use seeds\ds\MetroUkraine;
+use seeds\ds\Spar;
 
 class SourceTableSeeder extends Seeder
 {
@@ -36,31 +37,9 @@ class SourceTableSeeder extends Seeder
      */
     public function run()
     {
-        $this->seed(new Kaufland);
-        $this->seed(new MetroRomania);
-        $this->seed(new MetroRussia);
-        $this->seed(new MetroAustria());
-        $this->seed(new MetroBelgium());
-        $this->seed(new MetroBulgaria());
-        $this->seed(new MetroChina());
-        $this->seed(new MetroCroatia());
-        $this->seed(new MetroCzechRepublic());
-        $this->seed(new MetroFrance());
-        $this->seed(new MetroGermany());
-        $this->seed(new MetroHungary());
-        $this->seed(new MetroIndia());
-        $this->seed(new MetroItaly());
-        $this->seed(new MetroJapan());
-        $this->seed(new MetroKazakhstan());
-        $this->seed(new MetroNetherlands());
-        $this->seed(new MetroPakistan());
-        $this->seed(new MetroPoland());
-        $this->seed(new MetroPortugal());
-        $this->seed(new MetroSerbia());
-        $this->seed(new MetroSlovakia());
-        $this->seed(new MetroSpain());
-        $this->seed(new MetroTurkey());
-        $this->seed(new MetroUkraine());
+//        $this->seed(new Kaufland);
+//        $this->seed(new MetroRomania);
+        $this->seed(new Spar());
     }
 
     protected function seed($ds)
