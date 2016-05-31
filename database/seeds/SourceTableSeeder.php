@@ -2,30 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use seeds\ds\Kaufland;
-use seeds\ds\MetroAustria;
-use seeds\ds\MetroBulgaria;
-use seeds\ds\MetroChina;
-use seeds\ds\MetroCroatia;
-use seeds\ds\MetroCzechRepublic;
-use seeds\ds\MetroFrance;
-use seeds\ds\MetroGermany;
-use seeds\ds\MetroHungary;
-use seeds\ds\MetroIndia;
-use seeds\ds\MetroItaly;
-use seeds\ds\MetroJapan;
-use seeds\ds\MetroKazakhstan;
-use seeds\ds\MetroNetherlands;
-use seeds\ds\MetroPakistan;
-use seeds\ds\MetroPoland;
-use seeds\ds\MetroPortugal;
-use seeds\ds\MetroRomania;
-use seeds\ds\MetroRussia;
-use seeds\ds\MetroBelgium;
-use seeds\ds\MetroSerbia;
-use seeds\ds\MetroSlovakia;
-use seeds\ds\MetroSpain;
-use seeds\ds\MetroTurkey;
-use seeds\ds\MetroUkraine;
+use seeds\ds\Metro;
 
 class SourceTableSeeder extends Seeder
 {
@@ -37,30 +14,13 @@ class SourceTableSeeder extends Seeder
     public function run()
     {
         $this->seed(new Kaufland);
-        $this->seed(new MetroRomania);
-        $this->seed(new MetroRussia);
-        $this->seed(new MetroAustria());
-        $this->seed(new MetroBelgium());
-        $this->seed(new MetroBulgaria());
-        $this->seed(new MetroChina());
-        $this->seed(new MetroCroatia());
-        $this->seed(new MetroCzechRepublic());
-        $this->seed(new MetroFrance());
-        $this->seed(new MetroGermany());
-        $this->seed(new MetroHungary());
-        $this->seed(new MetroIndia());
-        $this->seed(new MetroItaly());
-        $this->seed(new MetroJapan());
-        $this->seed(new MetroKazakhstan());
-        $this->seed(new MetroNetherlands());
-        $this->seed(new MetroPakistan());
-        $this->seed(new MetroPoland());
-        $this->seed(new MetroPortugal());
-        $this->seed(new MetroSerbia());
-        $this->seed(new MetroSlovakia());
-        $this->seed(new MetroSpain());
-        $this->seed(new MetroTurkey());
-        $this->seed(new MetroUkraine());
+        $metro = new Metro;
+        foreach ($metro->urls as $country_code => $url) {
+            $ds = new Metro();
+            $ds->country_code = $country_code;
+            $ds->url = $url;
+            $this->seed($ds);
+        }
     }
 
     protected function seed($ds)
