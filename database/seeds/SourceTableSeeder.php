@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use seeds\ds\Carrefour;
 use seeds\ds\Kaufland;
 use seeds\ds\Metro;
+use seeds\ds\Spar;
 
 class SourceTableSeeder extends Seeder
 {
@@ -22,6 +24,13 @@ class SourceTableSeeder extends Seeder
             $this->seed($ds);
         }
         $this->seed(new Spar());
+        $carrefour = new Carrefour;
+        foreach ($carrefour->urls as $country_code => $url) {
+            $ds = new Carrefour();
+            $ds->country_code = $country_code;
+            $ds->url = $url;
+            $this->seed($ds);
+        }
     }
 
     protected function seed($ds)
