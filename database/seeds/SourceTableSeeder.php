@@ -21,6 +21,7 @@ class SourceTableSeeder extends Seeder
             $ds->url = $url;
             $this->seed($ds);
         }
+        $this->seed(new Spar());
     }
 
     protected function seed($ds)
