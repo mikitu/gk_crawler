@@ -22,7 +22,8 @@
             "database"
         ],
         "psr-4": {
-            "GkCrawler\\": "app/"
+            "GkCrawler\\": "app/",
+            "seeds\\ds\\": "seeds/ds/"
         }
     },
     "autoload-dev": {

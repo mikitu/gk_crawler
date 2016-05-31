@@ -2,7 +2,8 @@
 
 namespace GkCrawler\Crawler;
 
-use GkCrawler\Crawler\SourceInterface;
+use GkCrawler\Model\Country;
+use GkCrawler\Model\City;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,17 +60,77 @@ abstract class Source implements SourceInterface
     public function saveData(array $data)
     {
         foreach ($data['body'] as $item) {
-            $this->save($item);
+            $this->save($this->normalize($item));
         }
     }
+    public function save(array $item)
+    {
+        if (empty($item['city'])) {
+            return;
+        }
+        $country_id = $this->getCountryId($item['country_code']);
+        $city_id = $this->getCityId($country_id, $item['city']);
+        $modelName = get_class($this->dbModel);
+        $dbModel = new $modelName;
+        $dbModel->updateOrCreate([
+            'source_id'     => $this->sourceData['id'],
+            'country_id'    => $country_id,
+            'city_id'       => $city_id,
+            'zipcode'       => $item['zipcode'],
+        ], [
+            'source_id'     => $this->sourceData['id'],
+            'country_id'    => $country_id,
+            'city_id'       => $city_id,
+            'name'          => $item['name'],
+            'address'       => $item['address'],
+            'phone'         => $item['phone'],
+            'zipcode'       => $item['zipcode'],
+            'latitude'      => $item['latitude'],
+            'longitude'     => $item['longitude'],
+            'openinghours'  => $item['openinghours'],
+        ]);
+    }
+
     /**
      * @param array $item
      * @return mixed
      */
-    public abstract function save(array $item);
+    public abstract function normalize(array $item);
 
     public function getName()
     {
         return $this->sourceData['name'];
+    }
+
+    public function getCountryCode()
+    {
+        return $this->sourceData['country_code'];
+    }
+
+    /**
+     * @param $country_id
+     * @param $city_name
+     * @return int | null
+     */
+    public function getCityId($country_id, $city_name)
+    {
+        $city = null;
+        if ($city_name) {
+            $city = (new City())->firstOrCreate(['country_id' => $country_id, 'name' => $city_name]);
+        }
+        if ($city) {
+            return $city->id;
+        }
+        return null;
+    }
+
+    /**
+     * @param $country_code
+     * @return integer country_id
+     */
+    private function getCountryId($country_code)
+    {
+        $country = (new Country())->firstOrCreate(['country_code' => $country_code]);
+        return $country->id;
     }
 }

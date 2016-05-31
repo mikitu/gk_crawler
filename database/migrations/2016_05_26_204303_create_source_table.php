@@ -15,6 +15,7 @@ class CreateSourceTable extends Migration
         Schema::create('source', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->char('country_code', 2);
             $table->string('url');
             $table->string('method');
             $table->text('headers');

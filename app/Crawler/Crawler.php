@@ -28,9 +28,9 @@ class Crawler
     public function run(Client $client, OutputInterface $output)
     {
         foreach ($this->sources as $source) {
-            $output->info("Start: " . $source->getName());
+            $output->info("Start: " . $source->getName() . ' ' . $source->getCountryCode());
             $source->run($client);
-            $output->info("Done: " . $source->getName());
+            $output->info("Done");
         }
     }
 

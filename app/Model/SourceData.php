@@ -26,7 +26,7 @@ class SourceData extends Model
      * @var array
      */
     protected $fillable = [
-        'source_id', 'city_id', 'country_id', 'address', 'phone', 'zipcode', 'latitude', 'longitude',
+        'source_id', 'city_id', 'country_id', 'name', 'address', 'phone', 'zipcode', 'latitude', 'longitude', 'openinghours',
     ];
 
     public function source()

@@ -12,10 +12,9 @@ namespace GkCrawler\Crawler\Sources;
 use GkCrawler\Crawler\Source;
 use GkCrawler\Model\Country;
 use GkCrawler\Model\City;
-use GkCrawler\Model\SourceData;
 use GuzzleHttp\Client;
 
-class Kauffland extends Source
+class Kaufland extends Source
 {
     /**
      * @param Client $client
@@ -33,28 +32,36 @@ class Kauffland extends Source
 
     /**
      * @param array $item
-     * @return mixed
+     * @return array
      */
-    public function save(array $item)
+    public function normalize(array $item)
     {
-        $country = (new Country())->firstOrCreate(['country_code' => $item['country']]);
-        $city = (new City())->firstOrCreate(['country_id' => $country->id, 'name' => $item['city']]);
-        $modelName = get_class($this->dbModel);
-        $dbModel = new $modelName;
-        $dbModel->updateOrCreate([
-            'source_id'     => $this->sourceData['id'],
-            'country_id'    => $country->id,
-            'city_id'       => $city->id,
-            'zipcode'       => $item['zipcode'],
-        ], [
-            'source_id'     => $this->sourceData['id'],
-            'country_id'    => $country->id,
-            'city_id'       => $city->id,
+        return array_map('trim', [
+            'country_code'  => $item['country'],
+            'city'          => $item['city'],
+            'name'          => $this->sourceData['name'],
             'address'       => $item['street'],
             'phone'         => $item['telephone'],
             'zipcode'       => $item['zipcode'],
             'latitude'      => $item['location']['latitude'],
             'longitude'     => $item['location']['longitude'],
+            'openinghours'  => (string)$this->getOpeningHours($item['openinghours']),
         ]);
+    }
+
+    private function getOpeningHours($openinghours)
+    {
+        $openinghours = str_replace("\n", '', $openinghours);
+        $openinghours = str_replace("> <", '><', $openinghours);
+        preg_match_all('/<div class="stofi-days.*>(.*)<\/div><div class="stofi-times">(.*)<\/div>/iU', $openinghours, $matches, PREG_SET_ORDER);
+        $ret = [];
+        try {
+            foreach ($matches as $match) {
+                $ret[] = trim($match[1]) . ": " . trim(preg_replace('/ uhr/is', '', $match[2]));
+            }
+        } catch (Exception $e) {
+            echo "ERROR: " . $openinghours;
+        }
+        return implode('; ', $ret);
     }
 }
