@@ -86,16 +86,54 @@ class Carrefour extends Source
 
     private function grabDetails($url)
     {
+        echo $url . PHP_EOL;
         $res = $this->client->request('GET', $url);
+        if ($res->getStatusCode() != 200) {
+            return false;
+        }
         $body = $res->getBody();
-
+        $body = $this->clean($body);
         $opening = $this->parseOpening($body);
-        echo $body; die;
+        $phone = $this->parsePhone($body);
+        return [
+            'opening' => $opening,
+            'phone'   => $phone
+        ];
     }
 
     private function parseOpening($body)
     {
-        $pattern = '<ul class="tbold only_desktop">('
+        $pattern = '/<span class="data">([^<]+)<\/span><span>([^<]+)<\/span>/is';
+        preg_match_all($pattern, $body, $matches, PREG_PATTERN_ORDER );
+        $openings = [];
+        foreach ($matches[1] as $key => $day) {
+            $openings[] = trim($day . ":" . str_replace(".", "H", trim($matches[2][$key])));
+        }
+        return implode(";", $openings);
+    }
+
+    private function parsePhone($body)
+    {
+        $pattern = '/<div class="address"><div class="txt">.*T\. (\d+)/s';
+        preg_match($pattern, $body, $matches );
+        if (!isset($matches[1])) {
+            return '';
+        }
+        return trim($matches[1]);
+    }
+
+    /**
+     * @param $body
+     * @return mixed
+     */
+    private function clean($body)
+    {
+        $body = preg_replace("/\n\r/", "", $body);
+        $body = preg_replace("/\n/", "", $body);
+        $body = preg_replace("/\t/", " ", $body);
+        $body = preg_replace("/\s+/", " ", $body);
+        $body = preg_replace("/> </", "><", $body);
+        return $body;
     }
 
 }

@@ -11,8 +11,8 @@ class Carrefour
     public $country_code = '';
     public $url = '';
     public $urls = [
-//        'FR' => 'http://storereference.prd2.fr.carrefour.com//stores/js-api/store.json?parameters[lang]=fr&parameters[map]=true&parameters[macro]=true&parameters[min_cluster]=5000&parameters[store_bounds]=29.027322603152346,-15.198331156544668,51.30999039179263,18.90323134345533&parameters[store_services]=&parameters[store_types]=2263,13,134,2266&parameters[opendate]=&parameters[delta_distance]=100000&parameters[channel]=portailfr',
-//        'BE' => 'http://storelocator.prod.be.carrefour.eu/fr/stores/js-api/store.jsonp?parameters[lang]=fr&parameters[typology]=&parameters[store_bounds]=47.98957015879512,-4.960203277246137,53.539995276401584,13.606691254003863',
+        'FR' => 'http://storereference.prd2.fr.carrefour.com//stores/js-api/store.json?parameters[lang]=fr&parameters[map]=true&parameters[macro]=true&parameters[min_cluster]=5000&parameters[store_bounds]=29.027322603152346,-15.198331156544668,51.30999039179263,18.90323134345533&parameters[store_services]=&parameters[store_types]=2263,13,134,2266&parameters[opendate]=&parameters[delta_distance]=100000&parameters[channel]=portailfr',
+        'BE' => 'http://storelocator.prod.be.carrefour.eu/fr/stores/js-api/store.jsonp?parameters[lang]=fr&parameters[typology]=&parameters[store_bounds]=47.98957015879512,-4.960203277246137,53.539995276401584,13.606691254003863',
         'IT' => 'http://www.carrefour.it/sites/all/themes/carrefour/php/ws_mappe.php?tipo=PV&map=54.57606500258949,-52.29124999999999,54.57606500258949,74.27125000000001,32.996028279351655,74.27125000000001,32.996028279351655,-52.29124999999999&insegna=IPER,MARKET,EXPRESS'
     ];
     

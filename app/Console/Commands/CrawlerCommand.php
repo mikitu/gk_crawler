@@ -51,7 +51,6 @@ class CrawlerCommand extends Command implements OutputInterface
             $source = SourceFactory::create($dbSource['name'], $dbSource );
             $collection->add($source);
         }
-
-        (new Crawler($collection))->run(new Client, $this);
+        (new Crawler($collection))->run(new Client(['allow_redirects' => true,]), $this);
     }
 }
