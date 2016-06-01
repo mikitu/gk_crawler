@@ -15,15 +15,15 @@ class SourceTableSeeder extends Seeder
      */
     public function run()
     {
-        $this->seed(new Kaufland);
-        $metro = new Metro;
-        foreach ($metro->urls as $country_code => $url) {
-            $ds = new Metro();
-            $ds->country_code = $country_code;
-            $ds->url = $url;
-            $this->seed($ds);
-        }
-        $this->seed(new Spar());
+//        $this->seed(new Kaufland);
+//        $metro = new Metro;
+//        foreach ($metro->urls as $country_code => $url) {
+//            $ds = new Metro();
+//            $ds->country_code = $country_code;
+//            $ds->url = $url;
+//            $this->seed($ds);
+//        }
+//        $this->seed(new Spar());
         $carrefour = new Carrefour;
         foreach ($carrefour->urls as $country_code => $url) {
             $ds = new Carrefour();
