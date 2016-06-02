@@ -10,11 +10,11 @@ class CarrefourRomania extends Source
 {
     protected $client;
     protected $types = [
-        27 => "Carrefour Market",
-        26 => "Carrefour Hypermarket",
-        28 => "Carrefour Express",
-        29 => "Carrefour Express Convenience"
+        2 => "Carrefour Market",
+        1 => "Carrefour Hypermarket",
+        3 => "Carrefour Express",
     ];
+
     /**
      * @param Client $client
      * @return mixed
@@ -48,47 +48,34 @@ class CarrefourRomania extends Source
         $city = array_pop($address);
         $item['address'] = implode(', ', $address);
         $item['city'] = $city;
-        print_r($item);die;
 
-        if (! isset($item['address']['city'])) {
+        if (!isset($item['city'])) {
+            echo $item['url'] . PHP_EOL;
+
             return false;
         }
-        $details = $this->grabDetails('http://www.carrefour.pl' . $item['url']);
+        $details = $this->grabDetails('http://www.carrefour.ro/' . $item['url']);
         $item['contact_phone'] = '';
+        $item['open'] = '';
         if ($details) {
             $item['contact_phone'] = $details['phone'];
+            $item['open'] = $details['open'];
         }
         return array_map('trim', [
-            'country_code'  => $this->sourceData['country_code'],
-            'city'          => $item['address']['city'],
-            'name'          => $item['name'],
-            'address'       => $item['address']['street'],
-            'phone'         => $item['contact_phone'],
-            'zipcode'       => $item['address']['code'],
-            'latitude'      => $item['lat'],
-            'longitude'     => $item['lng'],
-            'openinghours'  => $this->getOpeningHours($item['open']),
+            'country_code' => $this->sourceData['country_code'],
+            'city' => $item['city'],
+            'name' => $item['name'],
+            'address' => $item['address'],
+            'phone' => $item['contact_phone'],
+            'zipcode' => '',
+            'latitude' => $item['lat'],
+            'longitude' => $item['lng'],
+            'openinghours' => $item['open'],
         ]);
-    }
-
-    private function getOpeningHours($openinghours)
-    {
-        $days = [1 => 'Su', 2 => 'Mo', 3 => 'Tu', 4 => 'We', 5 => 'Th', 6 => 'Fr', 7 => 'Sa'];
-        $open = [];
-        foreach ($openinghours as $key => $val) {
-            $open[] = $days[$key] . ': ' . str_replace('.', ':', $val);
-        }
-        $openinghours = implode('; ', $open);
-        $openinghours = str_replace('-', ' - ', $openinghours);
-        return $openinghours;
     }
 
     private function grabDetails($url)
     {
-        $url = mb_strtolower($url);
-        $url = str_replace('http://www.carrefour.pl/sklepy/carrefour-', '', $url);
-        $url = 'http://www.carrefour.pl/sklepy/carrefour-' . urlencode($url);
-        echo $url . PHP_EOL;
 
         $res = $this->client->request('GET', $url);
 
@@ -98,15 +85,36 @@ class CarrefourRomania extends Source
         $body = $res->getBody();
         $body = $this->clean($body);
         $phone = $this->parsePhone($body);
+        if (! $phone) {
+            echo "No phone found on: " . $url . PHP_EOL;
+        }
+        $openinghours = $this->parseOpeninghours($body);
+
         return [
-            'phone'   => $phone
+            'phone' => $phone,
+            'open' => $openinghours,
         ];
+    }
+
+    private function parseOpeninghours($body)
+    {
+        $pattern = '/<p class="t2"><b>([^<]+)<\/b> ([^<]+)/s';
+        preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
+        $ret = [];
+        foreach ($matches as $row) {
+            $row[1] = trim($row[1]);
+            if (! in_array($row[1], ['Telefon:', 'Fax:', 'Email:'])) {
+                $ret[] = trim($row[1]) . ' ' . trim($row[2]);
+            }
+        }
+        return implode('; ', $ret);
     }
 
     private function parsePhone($body)
     {
-        $pattern = '/<span itemprop="telephone"> (\d+)/s';
-        preg_match($pattern, $body, $matches );
+        $pattern = '/<b>Telefon:<\/b>([^<]+)<\/p>/iUs';
+        preg_match($pattern, $body, $matches);
+
         if (!isset($matches[1])) {
             return '';
         }
