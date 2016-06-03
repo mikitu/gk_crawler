@@ -5,6 +5,7 @@ use seeds\ds\Carrefour;
 use seeds\ds\CarrefourPoland;
 use seeds\ds\CarrefourRomania;
 use seeds\ds\CarrefourSpain;
+use seeds\ds\CarrefourTurkey;
 use seeds\ds\Kaufland;
 use seeds\ds\Metro;
 use seeds\ds\Spar;
@@ -36,7 +37,8 @@ class SourceTableSeeder extends Seeder
 //        }
 //        $this->seed(new CarrefourPoland());
 //        $this->seed(new CarrefourRomania());
-        $this->seed(new CarrefourSpain());
+//        $this->seed(new CarrefourSpain());
+        $this->seed(new CarrefourTurkey());
     }
 
     protected function seed($ds)

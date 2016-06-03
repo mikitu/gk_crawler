@@ -59,7 +59,7 @@ abstract class Source implements SourceInterface
      */
     public function saveData(array $data)
     {
-        foreach ($data['body'] as $item) {
+        foreach ($data['body'] as $k => $item) {
             $item = $this->normalize($item);
             if (! $item) continue;
             $this->save($item);
