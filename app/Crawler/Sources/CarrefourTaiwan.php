@@ -45,18 +45,9 @@ class CarrefourTaiwan extends Source
             'zipcode'       => $item['zipcode'],
             'latitude'      => $item['position']['lat'],
             'longitude'     => $item['position']['lng'],
-            'type'          => $item['typology'],
-            'openinghours'  => $this->getOpeningHours($item['opening']),
+            'type'          => $item['typology_id'],
+            'openinghours'  => $item['opening'],
         ]);
-    }
-
-    private function getOpeningHours($openinghours)
-    {
-        $openinghours = str_replace(':', ': ', $openinghours);
-        $openinghours = str_replace(';', '; ', $openinghours);
-        $openinghours = str_replace('-', ' - ', $openinghours);
-        $openinghours = str_replace('H', ':', $openinghours);
-        return $openinghours;
     }
 
     private function grabDetails($url)
@@ -84,12 +75,14 @@ class CarrefourTaiwan extends Source
 
         $pattern = '/pening-schedule-label">([^<]+)<\/span>([^<]+)<br\/>/iUs';
         preg_match_all($pattern, $body, $matches, PREG_PATTERN_ORDER );
-        print_r($matches);die;
         $openings = [];
         foreach ($matches[1] as $key => $day) {
-            $openings[] = trim($day . ":" . str_replace(".", "H", trim($matches[2][$key])));
+            $day = $this->translateCn(trim($day));
+            $hour = trim($matches[2][$key]);
+            $hour = preg_replace('/[^\d -:]+/', '', $hour);
+            $openings[] = trim($day . ": " . $hour);
         }
-        return implode(";", $openings);
+        return implode("; ", $openings);
     }
 
     /**
@@ -104,6 +97,20 @@ class CarrefourTaiwan extends Source
         $body = preg_replace("/\s+/", " ", $body);
         $body = preg_replace("/> </", "><", $body);
         return $body;
+    }
+
+    private function translateCn($str)
+    {
+        switch ($str) {
+            case "週一 :": return "Mo";
+            case "週二 :": return "Tw";
+            case "週三 :": return "We";
+            case "週四 :": return "Th";
+            case "週五 :": return "Fr";
+            case "週六 :": return "Sa";
+            case "週日 :": return "Su";
+        }
+        return $str;
     }
 
 }
