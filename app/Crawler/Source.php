@@ -139,4 +139,19 @@ abstract class Source implements SourceInterface
         $country = (new Country())->firstOrCreate(['country_code' => $country_code]);
         return $country->id;
     }
+
+    /**
+     * @param $body
+     * @return mixed
+     */
+    protected function clean($body)
+    {
+        $body = preg_replace("/\n\r/", "", $body);
+        $body = preg_replace("/\n/", "", $body);
+        $body = preg_replace("/\t/", " ", $body);
+        $body = preg_replace("/\s+/", " ", $body);
+        $body = preg_replace("/> </", "><", $body);
+        return $body;
+    }
+
 }

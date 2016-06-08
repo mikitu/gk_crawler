@@ -47,6 +47,8 @@ class SourceTableSeeder extends Seeder
 //        $this->seed(new CarrefourIndonesia());
 //        $this->seed(new CarrefourTaiwan());
 //        $this->seed(new CarrefourTunisia());
+//        $this->seed(new AuchanFrance());
+        $this->seed(new AuchanRomania());
     }
 
     protected function seed($ds)
