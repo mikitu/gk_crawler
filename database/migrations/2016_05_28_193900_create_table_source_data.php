@@ -18,6 +18,7 @@ class CreateTableSourceData extends Migration
             $table->integer("city_id")->unsigned();
             $table->integer("country_id")->unsigned();
             $table->string("name");
+            $table->string("typology");
             $table->string("address");
             $table->string("phone");
             $table->string("zipcode");

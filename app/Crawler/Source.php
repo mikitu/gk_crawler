@@ -62,10 +62,10 @@ abstract class Source implements SourceInterface
         foreach ($data['body'] as $k => $item) {
             $item = $this->normalize($item);
             if (! $item) continue;
-            $this->save($item);
+            $this->save($k, $item);
         }
     }
-    public function save(array $item)
+    public function save($index, array $item)
     {
         if (empty($item['city'])) {
             return;
@@ -74,6 +74,9 @@ abstract class Source implements SourceInterface
         $city_id = $this->getCityId($country_id, $item['city']);
         $modelName = get_class($this->dbModel);
         $dbModel = new $modelName;
+        if (empty($item['zipcode'])) {
+            $item['zipcode'] = 'auto_' . $index;
+        }
         $dbModel->updateOrCreate([
             'source_id'     => $this->sourceData['id'],
             'country_id'    => $country_id,
@@ -84,6 +87,7 @@ abstract class Source implements SourceInterface
             'country_id'    => $country_id,
             'city_id'       => $city_id,
             'name'          => $item['name'],
+            'typology'      => $item['type'],
             'address'       => $item['address'],
             'phone'         => $item['phone'],
             'zipcode'       => $item['zipcode'],

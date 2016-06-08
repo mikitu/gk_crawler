@@ -6,5 +6,5 @@ interface SourceInterface
 {
     public function run(Client $client);
     public function fetchData(Client $client);
-    public function save(array $data);
+    public function save($index, array $data);
 }
