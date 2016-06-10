@@ -92,14 +92,20 @@ class Carrefour extends Source
     private function grabDetails($url)
     {
         echo $url . PHP_EOL;
-        $res = $this->client->request('GET', $url);
-        if ($res->getStatusCode() != 200) {
-            return false;
+        $opening = "";
+        $phone = "";
+        try {
+            $res = $this->client->request('GET', $url);
+            if ($res->getStatusCode() != 200) {
+                return false;
+            }
+            $body = $res->getBody();
+            $body = $this->clean($body);
+            $opening = $this->parseOpening($body);
+            $phone = $this->parsePhone($body);
+        } catch (\Exception $e) {
+            echo "\tERROR: " . $e->getCode() . " : " . $e->getMessage() . PHP_EOL;
         }
-        $body = $res->getBody();
-        $body = $this->clean($body);
-        $opening = $this->parseOpening($body);
-        $phone = $this->parsePhone($body);
         return [
             'opening' => $opening,
             'phone'   => $phone
