@@ -20,6 +20,7 @@ class CreateSourceTable extends Migration
             $table->string('method');
             $table->text('headers');
             $table->text('data');
+            $table->boolean('parsed')->default(false);
         });
     }
 

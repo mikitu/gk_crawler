@@ -40,6 +40,7 @@ class Kaufland extends Source
             'country_code'  => $item['country'],
             'city'          => $item['city'],
             'name'          => $this->sourceData['name'],
+            'type'          => '',
             'address'       => $item['street'],
             'phone'         => $item['telephone'],
             'zipcode'       => $item['zipcode'],

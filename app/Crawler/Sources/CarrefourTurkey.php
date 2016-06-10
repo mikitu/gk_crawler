@@ -9,12 +9,6 @@ use GuzzleHttp\Client;
 class CarrefourTurkey extends Source
 {
     protected $client;
-    protected $types = [
-        27 => "Carrefour Market",
-        26 => "Carrefour Hypermarket",
-        28 => "Carrefour Express",
-        29 => "Carrefour Express Convenience"
-    ];
     /**
      * @param Client $client
      * @return mixed

@@ -31,6 +31,7 @@ class Crawler
             $output->info("Start: " . $source->getName() . ' ' . $source->getCountryCode());
             $source->run($client);
             $output->info("Done");
+            $source->done();
         }
     }
 

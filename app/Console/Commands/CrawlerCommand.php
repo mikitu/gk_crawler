@@ -45,10 +45,10 @@ class CrawlerCommand extends Command implements OutputInterface
     {
         $collection = new SourceCollection;
 
-        $dbSources = Model::All()->toArray();
+        $dbSources = Model::All()->where('parsed', 0);
 
         foreach($dbSources as $dbSource) {
-            $source = SourceFactory::create($dbSource['name'], $dbSource );
+            $source = SourceFactory::create($dbSource->name, $dbSource);
             $collection->add($source);
         }
         (new Crawler($collection))->run(new Client(['allow_redirects' => true,]), $this);

@@ -17,16 +17,22 @@ abstract class Source implements SourceInterface
      * @var
      */
     protected $dbModel;
+    /**
+     * @var Model
+     */
+    private $source;
 
     /**
      * Source constructor.
-     * @param array $data
-     * @param $dbModel
+     * @param Model $source
+     * @param Model $dbModel
+     * @internal param array $data
      */
-    public function __construct(array $data, Model $dbModel)
+    public function __construct(Model $source, Model $dbModel)
     {
-        $this->sourceData = $data;
+        $this->sourceData = $source->toArray();
         $this->dbModel = $dbModel;
+        $this->source = $source;
     }
 
     /**
@@ -76,6 +82,9 @@ abstract class Source implements SourceInterface
         $dbModel = new $modelName;
         if (empty($item['zipcode'])) {
             $item['zipcode'] = 'auto_' . $index;
+        }
+        if (empty($item['type'])) {
+            $item['type'] = '';
         }
         $dbModel->updateOrCreate([
             'source_id'     => $this->sourceData['id'],
@@ -152,6 +161,12 @@ abstract class Source implements SourceInterface
         $body = preg_replace("/\s+/", " ", $body);
         $body = preg_replace("/> </", "><", $body);
         return $body;
+    }
+
+    public function done()
+    {
+        $this->source->parsed = true;
+        $this->source->save();
     }
 
 }

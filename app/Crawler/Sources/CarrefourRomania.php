@@ -121,18 +121,4 @@ class CarrefourRomania extends Source
         return trim($matches[1]);
     }
 
-    /**
-     * @param $body
-     * @return mixed
-     */
-    private function clean($body)
-    {
-        $body = preg_replace("/\n\r/", "", $body);
-        $body = preg_replace("/\n/", "", $body);
-        $body = preg_replace("/\t/", " ", $body);
-        $body = preg_replace("/\s+/", " ", $body);
-        $body = preg_replace("/> </", "><", $body);
-        return $body;
-    }
-
 }

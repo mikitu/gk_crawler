@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use seeds\ds\AuchanFrance;
+use seeds\ds\AuchanRomania;
 use seeds\ds\Carrefour;
 use seeds\ds\CarrefourBrasil;
 use seeds\ds\CarrefourIndonesia;
@@ -23,15 +25,15 @@ class SourceTableSeeder extends Seeder
      */
     public function run()
     {
-//        $this->seed(new Kaufland);
-//        $metro = new Metro;
-//        foreach ($metro->urls as $country_code => $url) {
-//            $ds = new Metro();
-//            $ds->country_code = $country_code;
-//            $ds->url = $url;
-//            $this->seed($ds);
-//        }
-//        $this->seed(new Spar());
+        $this->seed(new Kaufland);
+        $metro = new Metro;
+        foreach ($metro->urls as $country_code => $url) {
+            $ds = new Metro();
+            $ds->country_code = $country_code;
+            $ds->url = $url;
+            $this->seed($ds);
+        }
+        $this->seed(new Spar());
         $carrefour = new Carrefour;
         foreach ($carrefour->urls as $country_code => $url) {
             $ds = new Carrefour();
@@ -39,15 +41,15 @@ class SourceTableSeeder extends Seeder
             $ds->url = $url;
             $this->seed($ds);
         }
-//        $this->seed(new CarrefourPoland());
-//        $this->seed(new CarrefourRomania());
-//        $this->seed(new CarrefourSpain());
-//        $this->seed(new CarrefourTurkey());
-//        $this->seed(new CarrefourBrasil());
-//        $this->seed(new CarrefourIndonesia());
-//        $this->seed(new CarrefourTaiwan());
-//        $this->seed(new CarrefourTunisia());
-//        $this->seed(new AuchanFrance());
+        $this->seed(new CarrefourPoland());
+        $this->seed(new CarrefourRomania());
+        $this->seed(new CarrefourSpain());
+        $this->seed(new CarrefourTurkey());
+        $this->seed(new CarrefourBrasil());
+        $this->seed(new CarrefourIndonesia());
+        $this->seed(new CarrefourTaiwan());
+        $this->seed(new CarrefourTunisia());
+        $this->seed(new AuchanFrance());
         $this->seed(new AuchanRomania());
     }
 

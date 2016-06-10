@@ -48,6 +48,7 @@ class Carrefour extends Source
         if (! isset($item['typology_name']) && isset($item['typology'])) {
             $item['typology_name'] = $item['typology'];
         }
+
         return array_map('trim', [
             'country_code'  => $this->sourceData['country_code'],
             'city'          => $item['city'],
@@ -83,6 +84,7 @@ class Carrefour extends Source
         $details = $this->grabDetails('http://www.carrefour.it' . $item['url']);
         $item['contact_phone'] = $details['phone'];
         $item['opening'] = $details['opening'];
+        $item['typology_name'] = $item['field_pdv_insegna_value'];
 
         return $item;
     }
