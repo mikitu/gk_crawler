@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use seeds\ds\AuchanFrance;
+use seeds\ds\AuchanItaly;
 use seeds\ds\AuchanRomania;
 use seeds\ds\Carrefour;
 use seeds\ds\CarrefourBrasil;
@@ -53,6 +54,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new AuchanFrance());
         $this->seed(new AuchanRomania());
         $this->seed(new Sainsburys());
+        $this->seed(new AuchanItaly());
     }
 
     protected function seed($ds)
