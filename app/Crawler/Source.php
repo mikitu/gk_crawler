@@ -4,6 +4,7 @@ namespace GkCrawler\Crawler;
 
 use GkCrawler\Model\Country;
 use GkCrawler\Model\City;
+use GkCrawler\validator\SourceValidatorInterface;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,10 @@ abstract class Source implements SourceInterface
      * @var
      */
     protected $dbModel;
+    /**
+     * @var
+     */
+    protected $validator;
     /**
      * @var Model
      */
@@ -67,7 +72,10 @@ abstract class Source implements SourceInterface
     {
         foreach ($data['body'] as $k => $item) {
             $item = $this->normalize($item);
-            if (! $item) continue;
+            if (! $this->validator->validate($item)) {
+                $this->validator->printErrorMessage();
+                continue;
+            };
             $this->save($k, $item);
         }
     }
@@ -167,6 +175,14 @@ abstract class Source implements SourceInterface
     {
         $this->source->parsed = true;
         $this->source->save();
+    }
+
+    /**
+     * @param SourceValidatorInterface $validator
+     */
+    public  function addValidator(SourceValidatorInterface $validator)
+    {
+        $this->validator = $validator;
     }
 
 }

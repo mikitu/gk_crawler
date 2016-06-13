@@ -17,6 +17,7 @@ class SourceFactory
             throw new Exception("Object " . $className . " not found");
         }
         $class = new $className($source, new SourceData);
+        $class->addValidator(new SourceValidator);
         return $class;
     }
 }

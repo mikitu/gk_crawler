@@ -48,9 +48,9 @@ class SourceTableSeeder extends Seeder
         $this->seed(new CarrefourSpain());
         $this->seed(new CarrefourTurkey());
         $this->seed(new CarrefourBrasil());
-        $this->seed(new CarrefourIndonesia());
+//        $this->seed(new CarrefourIndonesia());
         $this->seed(new CarrefourTaiwan());
-//        $this->seed(new CarrefourTunisia());
+        $this->seed(new CarrefourTunisia());
         $this->seed(new AuchanFrance());
         $this->seed(new AuchanRomania());
         $this->seed(new Sainsburys());

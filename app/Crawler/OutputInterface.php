@@ -12,4 +12,5 @@ namespace GkCrawler\Crawler;
 interface OutputInterface
 {
     public function info($string, $verbosity = null);
+    public function error($string, $verbosity = null);
 }
