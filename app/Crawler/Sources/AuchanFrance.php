@@ -42,8 +42,8 @@ class AuchanFrance extends Source
             'address'       => $item['properties']['address']['lines'][0],
             'phone'         => $item['properties']['contact']['phone'],
             'zipcode'       => $item['properties']['address']['zipcode'],
-            'latitude'      => $item['geometry']['coordinates'][0],
-            'longitude'     => $item['geometry']['coordinates'][1],
+            'latitude'      => $item['geometry']['coordinates'][1],
+            'longitude'     => $item['geometry']['coordinates'][0],
             'openinghours'  => $this->getOpeningHours($item['properties']),
         ]);
     }
