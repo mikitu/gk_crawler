@@ -29,7 +29,15 @@ class LatLongValidator implements Validatorinterface
             return false;
         }
         if (! preg_match('/^(\-?\d+(\.\d+)?)$/', $item['longitude'])) {
+            $this->err  = "Longitude value is in wrong format";
+            return false;
+        }
+        if(substr_count($item['latitude'], '.') != 1) {
             $this->err  = "Latitude value is in wrong format";
+            return false;
+        }
+        if(substr_count($item['longitude'], '.') != 1) {
+            $this->err  = "Longitude value is in wrong format";
             return false;
         }
         return true;
