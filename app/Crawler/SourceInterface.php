@@ -1,7 +1,7 @@
 <?php
 
 namespace GkCrawler\Crawler;
-use GkCrawler\validator\SourceValidatorInterface;
+use GkCrawler\Crawler\Validation\SourceValidatorInterface;
 use GuzzleHttp\Client;
 interface SourceInterface
 {

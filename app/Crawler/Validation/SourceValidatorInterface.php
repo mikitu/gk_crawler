@@ -6,12 +6,12 @@
  * Time: 06:49
  */
 
-namespace GkCrawler\validator;
+namespace GkCrawler\Crawler\Validation;
 
 
 interface SourceValidatorInterface
 {
-    public function addValidator(Validatorinterface $validator);
+    public function addValidator(ValidatorInterface $validator);
     public function validate(array $item);
-    public function printErrorMessage();
+    public function printErrorMessage(array $item);
 }

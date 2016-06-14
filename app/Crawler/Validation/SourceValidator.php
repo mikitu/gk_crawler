@@ -6,24 +6,26 @@
  * Time: 06:51
  */
 
-namespace GkCrawler\validator;
+namespace GkCrawler\Crawler\Validation;
 
-
-use GkCrawler\Crawler\OutputInterface;
 
 class SourceValidator implements SourceValidatorInterface
 {
     protected $validators = [];
-    
+    protected $err;
+
+    /**
+     * SourceValidator constructor.
+     */
     public function __construct()
     {
-        $this->addValidator(new LangLongValidator());
+        $this->addValidator(new LatLongValidator());
     }
 
     /**
      * @param Validatorinterface $validator
      */
-    public function addValidator(Validatorinterface $validator) {
+    public function addValidator(ValidatorInterface $validator) {
         $this->validators[] = $validator;
     }
 
@@ -42,8 +44,8 @@ class SourceValidator implements SourceValidatorInterface
         return true;
     }
 
-    public function printErrorMessage(OutputInterface $output)
+    public function printErrorMessage(array $item)
     {
-        $output->error();
+        echo "ERROR: " . $this->err . '`' . json_encode($item) . '`' . PHP_EOL;
     }
 }

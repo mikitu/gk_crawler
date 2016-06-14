@@ -6,10 +6,11 @@
  * Time: 18:32
  */
 
-namespace GkCrawler\validator;
+namespace GkCrawler\Crawler\Validation;
 
 
-interface Validatorinterface
+interface ValidatorInterface
 {
     public function isValid(array $item);
+    public function getError();
 }

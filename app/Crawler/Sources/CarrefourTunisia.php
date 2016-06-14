@@ -24,8 +24,8 @@ class CarrefourTunisia extends Carrefour
             'address'       => $item['adresse'],
             'phone'         => $item['tel'],
             'zipcode'       => '',
-            'latitude'      => $item['latitude'],
-            'longitude'     => $item['longitude'],
+            'latitude'      => str_replace(',', '.', $item['latitude']),
+            'longitude'     => str_replace(',', '.', $item['longitude']),
             'type'          => '',
             'openinghours'  => $item['info'],
         ]);

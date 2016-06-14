@@ -3,6 +3,7 @@
 namespace GkCrawler\Crawler;
 
 use GkCrawler\Model\SourceData;
+use GkCrawler\Crawler\Validation\SourceValidator;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\Exception;
 
@@ -17,7 +18,7 @@ class SourceFactory
             throw new Exception("Object " . $className . " not found");
         }
         $class = new $className($source, new SourceData);
-        $class->addValidator(new SourceValidator);
+        $class->addValidator(new SourceValidator());
         return $class;
     }
 }
