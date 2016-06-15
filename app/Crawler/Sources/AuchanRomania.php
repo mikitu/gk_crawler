@@ -42,10 +42,10 @@ class AuchanRomania extends Source
             $lat = trim(str_replace('Lat', '', $latlong[1]));
             $long = trim(str_replace('Long', '', $latlong[0]));
         }
-        $lat = str_replace('. ', '', $lat);
+//        $lat = str_replace('. ', '', $lat);
         $lat = str_replace('.:', '', $lat);
         $lat = preg_replace('/[^\d.]+/', '', $lat);
-        $long = str_replace('. ', '', $long);
+//        $long = str_replace('. ', '', $long);
         $long = str_replace('.:', '', $long);
         $long = preg_replace('/[^\d.]+/', '', $long);
         if (! $city) {

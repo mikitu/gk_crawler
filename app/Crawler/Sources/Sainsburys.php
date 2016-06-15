@@ -44,6 +44,9 @@ class Sainsburys extends Source
      */
     public function normalize(array $item)
     {
+        if ($item['location']['lon'] == '2.17591') {
+            $item['location']['lon'] = '-2.17591';
+        }
         return array_map('trim', [
             'country_code'  => $this->sourceData['country_code'],
             'city'          => $item['contact']['city'],

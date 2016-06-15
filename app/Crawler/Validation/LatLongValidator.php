@@ -16,14 +16,15 @@ class LatLongValidator implements Validatorinterface
 
     public function isValid(array $item)
     {
-        if (! isset($item['latitude'])) {
+        if (! isset($item['latitude']) || empty($item['latitude'])) {
             $this->err  = "Latitude value is missing";
             return false;
         }
-        if (! isset($item['longitude'])) {
+        if (! isset($item['longitude']) || empty($item['longitude'])) {
             $this->err  = "Longitude value is missing";
             return false;
         }
+
         if (! preg_match('/^(\-?\d+(\.\d+)?)$/', $item['latitude'])) {
             $this->err  = "Latitude value is in wrong format";
             return false;
@@ -32,11 +33,11 @@ class LatLongValidator implements Validatorinterface
             $this->err  = "Longitude value is in wrong format";
             return false;
         }
-        if(substr_count($item['latitude'], '.') != 1) {
+        if(substr_count($item['latitude'], '.') != 1 && strlen($item['latitude']) > 2) {
             $this->err  = "Latitude value is in wrong format";
             return false;
         }
-        if(substr_count($item['longitude'], '.') != 1) {
+        if(substr_count($item['longitude'], '.') != 1 && strlen($item['longitude']) > 2) {
             $this->err  = "Longitude value is in wrong format";
             return false;
         }
