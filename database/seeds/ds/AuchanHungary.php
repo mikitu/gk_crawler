@@ -8,6 +8,6 @@ class AuchanHungary
     public $data = [];
     public $method = 'GET';
     public $name = 'Auchan Hungary';
-    public $country_code = 'IT';
+    public $country_code = 'HU';
     public $url = 'https://www.auchan.hu/aruhazak';
 }
