@@ -184,5 +184,23 @@ abstract class Source implements SourceInterface
     {
         $this->validator = $validator;
     }
+    /**
+     * @param Client $client
+     * @return array
+     */
+    public function makeRequest(Client $client, $url)
+    {
+        $res = $client->request($this->sourceData['method'], $url);
+        $body = json_decode($res->getBody(), true);
+        $page_meta = $body['page_meta'];
+        $body = $body['results'];
+        return array($body, $page_meta, $res->getStatusCode());
+    }
 
+    protected function appendResults(&$body, $body1)
+    {
+        foreach ($body1 as $result) {
+            $body[] = $result;
+        }
+    }
 }

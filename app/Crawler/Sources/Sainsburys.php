@@ -71,24 +71,6 @@ class Sainsburys extends Source
         return implode('; ', $open);
     }
 
-    /**
-     * @param Client $client
-     * @return array
-     */
-    private function makeRequest(Client $client, $url)
-    {
-        $res = $client->request($this->sourceData['method'], $url);
-        $body = json_decode($res->getBody(), true);
-        $page_meta = $body['page_meta'];
-        $body = $body['results'];
-        return array($body, $page_meta, $res->getStatusCode());
-    }
-
-    private function appendResults(&$body, $body1)
-    {
-        foreach ($body1 as $result) {
-            $body[] = $result;
-        }
-    }
+    
 
 }

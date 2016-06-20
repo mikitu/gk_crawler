@@ -5,6 +5,7 @@ namespace GkCrawler\Crawler\Sources;
 
 use GkCrawler\Crawler\Source;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class Lidl extends Source
 {
@@ -14,18 +15,28 @@ class Lidl extends Source
      */
     public function fetchData(Client $client)
     {
-        $res = $client->request($this->sourceData['method'], $this->sourceData['url']);
-        print_r($res->getBody());die;
-        return [
-            "status_code" => $res->getStatusCode(),
-            "body" => json_decode($this->parse($res->getBody()), true),
-        ];
-    }
+        $url = $this->sourceData['url'] . '&$skip=0';
+        echo $url . PHP_EOL;
 
-    public function parse($data)
-    {
-        preg_match('/var storeDetailArr = new Array\((.*)\);/iUs', $data, $match);
-        return '[' . $match[1] . ']';
+        list($body, $status_code) = $this->makeRequest($client, $url);
+        $have_results = true;
+        $offset = 0;
+
+        while ($have_results) {
+            $offset += 50;
+            $url  =  $this->sourceData['url'] . '&$skip=' . $offset;
+            echo $url . PHP_EOL;
+            list($body1, ) = $this->makeRequest($client, $url);
+            if ($body1) {
+                $this->appendResults($body, $body1);
+            } else {
+                $have_results = false;
+            }
+        }
+        return [
+            "status_code" => $status_code,
+            "body" => $body,
+        ];
     }
 
     /**
@@ -34,28 +45,29 @@ class Lidl extends Source
      */
     public function normalize(array $item)
     {
-        list($lat,$lon) = explode(',', $item['geocode']);
         return array_map('trim', [
             'country_code'  => $this->sourceData['country_code'],
-            'city'          => $item['town'],
-            'name'          => html_entity_decode($item['name']),
-            'address'       => $item['address'],
-            'phone'         => $item['phone'],
-            'zipcode'       => '',
-            'latitude'      => $lat,
-            'longitude'     => $lon,
-            'openinghours'  => ''//$this->getOpeningHours($item['openinghours']),
+            'city'          => $item['Locality'],
+            'name'          => $item['ShownStoreName'],
+            'address'       => $item['AddressLine'],
+            'phone'         => '',
+            'zipcode'       => $item['PostalCode'],
+            'latitude'      => $item['Latitude'],
+            'longitude'     => $item['Longitude'],
+            'openinghours'  => $this->getOpeningHours($item['OpeningTimes']),
         ]);
     }
 
     private function getOpeningHours($openinghours)
     {
-        $all = $openinghours['all'];
-        $op = [];
-        foreach ($all as $val) {
-            $op[] = $val['title'] . ' : ' . $val['hours'];
-        }
-        return implode('; ', $op);
+        return str_replace('<br', '; ', $openinghours);
+    }
+    public function makeRequest(Client $client, $url)
+    {
+        $res = $client->request($this->sourceData['method'], $url);
+        $body = json_decode($res->getBody(), true);
+        $body = $body['d']['results'];
+        return array($body, $res->getStatusCode());
     }
 
 }

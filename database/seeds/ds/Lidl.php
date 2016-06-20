@@ -4,10 +4,7 @@ namespace seeds\ds;
 
 class Lidl
 {
-    public $headers = [
-        'Referer' => 'http://www.lidl.co.uk/en/785.htm',
-        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
-    ];
+    public $headers = [];
     public $data = [];
     public $method = 'GET';
     public $name = 'Lidl';
