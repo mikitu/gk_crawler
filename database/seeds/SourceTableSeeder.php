@@ -60,7 +60,17 @@ class SourceTableSeeder extends Seeder
         $this->seed(new AuchanItaly());
         $this->seed(new AuchanHungary());
 //        $this->seed(new AuchanPoland());
-        $this->seed(new Lidl());
+        $lidl = new Lidl;
+        foreach ($lidl->urls as $country_code => $url) {
+            $ds = new Lidl();
+            $ds->country_code = $country_code;
+            if (is_array($url)) {
+                $ds->url = implode('*', $url);
+            } else {
+                $ds->url = $url;
+            }
+            $this->seed($ds);
+        }
     }
 
     protected function seed($ds)

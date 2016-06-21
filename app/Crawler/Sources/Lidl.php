@@ -15,22 +15,25 @@ class Lidl extends Source
      */
     public function fetchData(Client $client)
     {
-        $url = $this->sourceData['url'] . '&$skip=0';
-        echo $url . PHP_EOL;
-
-        list($body, $status_code) = $this->makeRequest($client, $url);
-        $have_results = true;
-        $offset = 0;
-
-        while ($have_results) {
-            $offset += 50;
-            $url  =  $this->sourceData['url'] . '&$skip=' . $offset;
+        $urls = explode('*', $this->sourceData['url']);
+        foreach($urls as $dsUrl) {
+            $url = $dsUrl . '&$skip=0';
             echo $url . PHP_EOL;
-            list($body1, ) = $this->makeRequest($client, $url);
-            if ($body1) {
-                $this->appendResults($body, $body1);
-            } else {
-                $have_results = false;
+
+            list($body, $status_code) = $this->makeRequest($client, $url);
+            $have_results = true;
+            $offset = 0;
+
+            while ($have_results) {
+                $offset += 50;
+                $url = $dsUrl . '&$skip=' . $offset;
+                echo $url . PHP_EOL;
+                list($body1,) = $this->makeRequest($client, $url);
+                if ($body1) {
+                    $this->appendResults($body, $body1);
+                } else {
+                    $have_results = false;
+                }
             }
         }
         return [
@@ -45,10 +48,12 @@ class Lidl extends Source
      */
     public function normalize(array $item)
     {
+        $city = preg_replace('/\([^\)]+\)$/is', '', $item['Locality']);
+        $name = ! empty($item['ShownStoreName']) ? $item['ShownStoreName'] : "Lidl " . $city;
         return array_map('trim', [
             'country_code'  => $this->sourceData['country_code'],
-            'city'          => $item['Locality'],
-            'name'          => $item['ShownStoreName'],
+            'city'          => $city,
+            'name'          => $name,
             'address'       => $item['AddressLine'],
             'phone'         => '',
             'zipcode'       => $item['PostalCode'],
@@ -60,7 +65,7 @@ class Lidl extends Source
 
     private function getOpeningHours($openinghours)
     {
-        return str_replace('<br', '; ', $openinghours);
+        return str_replace('<br>', '; ', $openinghours);
     }
     public function makeRequest(Client $client, $url)
     {
