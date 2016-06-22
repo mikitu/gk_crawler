@@ -17,6 +17,7 @@ use seeds\ds\CarrefourTunisia;
 use seeds\ds\CarrefourTurkey;
 use seeds\ds\Kaufland;
 use seeds\ds\Lidl;
+use seeds\ds\LidlGermany;
 use seeds\ds\Metro;
 use seeds\ds\Sainsburys;
 use seeds\ds\Spar;
@@ -71,6 +72,7 @@ class SourceTableSeeder extends Seeder
             }
             $this->seed($ds);
         }
+        $this->seed(new LidlGermany());
     }
 
     protected function seed($ds)
