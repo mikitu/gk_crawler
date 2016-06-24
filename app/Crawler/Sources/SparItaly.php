@@ -32,18 +32,23 @@ class SparItaly extends Source
 
     public function parseDetails($client, $item)
     {
+        if ($item['url'] != 'http://www.mydespar.it/punto-vendita/109/acquaviva/despar') return;
         $res = $client->request($this->sourceData['method'], $item['url']);
         $body = $this->clean($res->getBody());
-        <p class="telefono"><i class="fa fa-phone"></i> 0825-666081</p>
-<tr>
-    <td>Orari di apertura</td>
-    <td>Dal Lunedì al Sabato 07:00-14:00-16:30-21:00. Domenica:08:00-13:30</td>
-</tr>
-    $(document).ready(function() {
-        createGMap('pdv-map', 'DESPAR',
-            'VIA ARC. PALOMBELLA,30/A, ACQUAVIVA',
-            40.89582905460185, 16.838234784378074);
-    });
+        $pattern = '/<p class="telefono"><i class="fa fa-phone"><\/i>([^<]+)<\/p>.*<td>Orari di apertura<\/td><td>([^<]+)<\/td>.*createGMap\(\'pdv-map\', .*, ([\d.]+), ([\d.]+)\); }\);/iUs';
+        preg_match($pattern, $body, $matches);
+        var_dump($matches);
+        die();
+//        <p class="telefono"><i class="fa fa-phone"></i> 0825-666081</p>
+//<tr>
+//    <td>Orari di apertura</td>
+//    <td>Dal Lunedì al Sabato 07:00-14:00-16:30-21:00. Domenica:08:00-13:30</td>
+//</tr>
+//    $(document).ready(function() {
+//        createGMap('pdv-map', 'DESPAR',
+//            'VIA ARC. PALOMBELLA,30/A, ACQUAVIVA',
+//            40.89582905460185, 16.838234784378074);
+//    });
 
         echo($body);die;
     }
