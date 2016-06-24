@@ -22,6 +22,7 @@ use seeds\ds\LidlGermany;
 use seeds\ds\Metro;
 use seeds\ds\Sainsburys;
 use seeds\ds\Spar;
+use seeds\ds\SparGetmany;
 use seeds\ds\SparItaly;
 
 class SourceTableSeeder extends Seeder
@@ -77,6 +78,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new LidlGermany());
         $this->seed(new BillaAustria());
         $this->seed(new SparItaly());
+        $this->seed(new SparGetmany());
     }
 
     protected function seed($ds)
