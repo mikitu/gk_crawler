@@ -19,38 +19,35 @@ class SparItaly extends Source
         foreach($urls as $k => $url) {
             $items = array_merge($items, $this->makeRequest($client, $url));
         }
+        $fullItems = [];
         foreach ($items as $item) {
             $details = $this->parseDetails($client, $item);
+            if (! empty($details)) {
+                $fullItems[] = array_merge($item, $details);
+            }
         }
-        die;
-        $res = $client->request($this->sourceData['method'], $url);
         return [
-            "status_code" => $res->getStatusCode(),
-            "body" => json_decode($this->parse($res->getBody()), true),
+            "status_code" => 200,
+            "body" => $fullItems,
         ];
     }
 
     public function parseDetails($client, $item)
     {
-        if ($item['url'] != 'http://www.mydespar.it/punto-vendita/109/acquaviva/despar') return;
         $res = $client->request($this->sourceData['method'], $item['url']);
         $body = $this->clean($res->getBody());
         $pattern = '/<p class="telefono"><i class="fa fa-phone"><\/i>([^<]+)<\/p>.*<td>Orari di apertura<\/td><td>([^<]+)<\/td>.*createGMap\(\'pdv-map\', .*, ([\d.]+), ([\d.]+)\); }\);/iUs';
         preg_match($pattern, $body, $matches);
-        var_dump($matches);
-        die();
-//        <p class="telefono"><i class="fa fa-phone"></i> 0825-666081</p>
-//<tr>
-//    <td>Orari di apertura</td>
-//    <td>Dal Lunedì al Sabato 07:00-14:00-16:30-21:00. Domenica:08:00-13:30</td>
-//</tr>
-//    $(document).ready(function() {
-//        createGMap('pdv-map', 'DESPAR',
-//            'VIA ARC. PALOMBELLA,30/A, ACQUAVIVA',
-//            40.89582905460185, 16.838234784378074);
-//    });
-
-        echo($body);die;
+        if (empty($matches)) {
+            return [];
+        }
+        array_shift($matches);
+        return [
+            'phone' => $matches[0],
+            'openinghours' => $matches[1],
+            'latitude' => $matches[2],
+            'longitude' => $matches[3],
+        ];
     }
 
     /**
@@ -59,17 +56,17 @@ class SparItaly extends Source
      */
     public function normalize(array $item)
     {
-        list($lat,$lon) = explode(',', $item['geocode']);
         return array_map('trim', [
             'country_code'  => $this->sourceData['country_code'],
-            'city'          => $item['town'],
-            'name'          => html_entity_decode($item['name']),
+            'city'          => $item['city'],
+            'name'          => $item['name'],
+            'type'          => $item['type'],
             'address'       => $item['address'],
             'phone'         => $item['phone'],
             'zipcode'       => '',
-            'latitude'      => $lat,
-            'longitude'     => $lon,
-            'openinghours'  => ''//$this->getOpeningHours($item['openinghours']),
+            'latitude'      => $item['latitude'],
+            'longitude'     => $item['longitude'],
+            'openinghours'  => $item['openinghours'],
         ]);
     }
 
