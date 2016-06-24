@@ -6,6 +6,7 @@ use seeds\ds\AuchanHungary;
 use seeds\ds\AuchanItaly;
 use seeds\ds\AuchanPoland;
 use seeds\ds\AuchanRomania;
+use seeds\ds\BillaAustria;
 use seeds\ds\Carrefour;
 use seeds\ds\CarrefourBrasil;
 use seeds\ds\CarrefourIndonesia;
@@ -21,6 +22,7 @@ use seeds\ds\LidlGermany;
 use seeds\ds\Metro;
 use seeds\ds\Sainsburys;
 use seeds\ds\Spar;
+use seeds\ds\SparItaly;
 
 class SourceTableSeeder extends Seeder
 {
@@ -73,6 +75,8 @@ class SourceTableSeeder extends Seeder
             $this->seed($ds);
         }
         $this->seed(new LidlGermany());
+        $this->seed(new BillaAustria());
+        $this->seed(new SparItaly());
     }
 
     protected function seed($ds)
