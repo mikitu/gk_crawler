@@ -42,28 +42,50 @@ class CrawlProcessHospitalsCommand extends Command
         $base_url = 'http://www.hospitalglobal.com';
         $urls = Hospital::all();
         foreach($urls as $model) {
-            echo $model->url.PHP_EOL;
             if (! empty($model->latitude)) continue;
+            echo $model->url.PHP_EOL;
             $model->url = str_replace($base_url, '', $model->url);
             $model->url = $base_url . $model->url;
             try {
-            $client = new Client(['allow_redirects' => true,]);
-            $request = $client->get($model->url);
-            $body = $request->getBody();
+                $client = new Client(['allow_redirects' => true,]);
+                $request = $client->get($model->url);
+                $body = $this->clean($request->getBody());
+                $pattern3 = '/<br \/><strong>([^<]+):<\/strong>([^<]+)/is';
+                preg_match_all($pattern3, $body, $matches, PREG_SET_ORDER);
 
-            $pattern3 = '/<br \/>[^<]*<strong>([^<]+):\s+<\/strong>\s+([^<]+)\s+/is';
-            preg_match_all($pattern3, $body, $matches, PREG_SET_ORDER);
-            array_walk($matches, function(&$value) {
-                array_shift($value);
-                $value = [$value[0] => $value[1]];
-            });
-            $model->raw_data = json_encode($matches);
-            $pattern4 = '/"latitude":"([^"]+)","longitude":"\s?([^"]+)"/is';
-            preg_match($pattern4, $body, $matches);
-            $model->latitude = $matches[1];
-            $model->longitude = $matches[2];
-            $model->save();
-            } catch (\Exception $e) {}
+                array_walk($matches, function(&$value) {
+                    array_shift($value);
+                    $value = [$value[0] => $value[1]];
+                });
+                $model->raw_data = json_encode($matches);
+                $pattern4 = '/"latitude":"([^"]+)","longitude":"\s?([^"]+)"/is';
+                preg_match($pattern4, $body, $matches);
+                if (! empty($matches[1]) && ! empty($matches[1])) {
+                    $model->latitude = $matches[1];
+                    $model->longitude = $matches[2];
+                }
+                $model->save();
+            } catch (\Exception $e) {
+                $this->info($e->getMessage() . " " . $e->getLine());
+            }
         }
+    }
+
+    /**
+     * @param $body
+     * @return mixed
+     */
+    protected function clean($body)
+    {
+        $body = preg_replace("/\n\r/", "", $body);
+        $body = preg_replace("/\n/", "", $body);
+        $body = preg_replace("/\t/", " ", $body);
+        $body = preg_replace("/\s+/", " ", $body);
+        $body = preg_replace("/> </", "><", $body);
+        $body = preg_replace("/>\s+/", ">", $body);
+        $body = preg_replace("/\s+>/", ">", $body);
+        $body = preg_replace("/\s+</", "<", $body);
+        $body = preg_replace("/\s+>/", ">", $body);
+        return $body;
     }
 }
