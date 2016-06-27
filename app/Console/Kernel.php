@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Commands\Inspire::class,
          Commands\CrawlerCommand::class,
+         Commands\CrawlHospitalsCommand::class,
+         Commands\CrawlProcessHospitalsCommand::class,
          Commands\ValidateLatLongCommand::class,
     ];
 
