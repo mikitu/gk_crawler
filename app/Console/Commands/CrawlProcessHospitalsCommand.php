@@ -13,7 +13,7 @@ class CrawlProcessHospitalsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'crawler:process:hospitals';
+    protected $signature = 'crawler:process:hospitals {--from=} {--to=}';
 
     /**
      * The console command description.
@@ -39,8 +39,17 @@ class CrawlProcessHospitalsCommand extends Command
      */
     public function handle()
     {
+        $from = $this->option('from');
+        $to = $this->option('to');
+
         $base_url = 'http://www.hospitalglobal.com';
-        $urls = Hospital::all();
+        if (! is_null($from) && ! is_null($to)) {
+            $urls = Hospital::whereBetween('id', array(intval($from), intval($to)))->get();;
+        } else {
+            $urls = Hospital::all();
+//            $urls = Hospital::all()->sortByDesc("id");;
+        }
+//        $urls = Hospital::whereBetween('id', array(3100, 3200))->get();;
         foreach($urls as $model) {
             if (! empty($model->latitude)) continue;
             echo $model->url.PHP_EOL;
@@ -63,6 +72,7 @@ class CrawlProcessHospitalsCommand extends Command
                 if (! empty($matches[1]) && ! empty($matches[1])) {
                     $model->latitude = $matches[1];
                     $model->longitude = $matches[2];
+                    $this->info($matches[1]);
                 }
                 $model->save();
             } catch (\Exception $e) {
