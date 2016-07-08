@@ -8,6 +8,8 @@ use Illuminate\Console\Command;
 
 class CrawlHospitalsCommand extends Command
 {
+    protected $base_url = 'http://www.hospitalglobal.com';
+    protected $client;
     /**
      * The name and signature of the console command.
      *
@@ -39,62 +41,94 @@ class CrawlHospitalsCommand extends Command
      */
     public function handle()
     {
-        $base_url = 'http://www.hospitalglobal.com';
-        $url = $base_url . '/index.php/hospitals-in-the-world.html';
-        $client = new Client(['allow_redirects' => true,]);
+        $url = $this->base_url . '/index.php/hospitals-in-the-world.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe.html';
 
-        $request = $client->get($url);
-
-        $body = $request->getBody();
-        $pattern = '/<li>[^<]+<a[^>]+><img[^>]+><\/a>[^<]+<p>[^<]+<a href="(\/index.php\/hospitals-in-[^.]+.html)"/is';
-
-        preg_match_all($pattern, $body, $matches);
+        $this->client = new Client(['allow_redirects' => true,]);
+//        $request = $this->client->get($url);
+//        $body = $request->getBody();
         $urls = [];
-        foreach ($matches[1] as $url) {
-            $url = $base_url . $url;
-            $request = $client->get($url);
-            $body = $request->getBody();
-            $pattern = '/<li>[^<]+<div[^>]+>[^<]+<div[^>]+>[^<]+<a[^>]+><img[^>]+><\/a><br \/>[^<]+<a href="(\/index.php\/hospitals-in-[^.]+.html)"/is';
-            preg_match_all($pattern, $body, $matches);
-            foreach ($matches[1] as $url1) {
-                $url1 = $base_url . $url1;
-                $request = $client->get($url1);
-                $body1 = $request->getBody();
-                $pa = '/<li class="item\d+"><a href="([^"]+)"><span>Details and maps[^<]*<\/span>/is';
-                preg_match($pa, $body1, $matches1);
-                try {
-                    $details_url = $base_url . $matches1[1] . '?limit=0';
-                } catch (\Exception $e) {
-                    print_r($matches1);
-//                    echo $body2 . PHP_EOL;
-                    die($url1);
-                }
-                $request = $client->get($details_url);
-                $body2 = $request->getBody();
-                
-                $pattern2 = '/<a href="(\/index.php\/hospitals-[^\d]+\d+-[^.]+.html)">/is';
-                preg_match_all($pattern2, $body2, $matches2);
-                try {
-                    $urls = array_merge($urls, $matches2[1]);
-                } catch (\Exception $e) {
-                    print_r($matches2);
-//                    echo $body2 . PHP_EOL;
-                    die($details_url);
-                }
-            }
-        }
+
+        //world (usa)
+//        $pattern = '/<li>[^<]+<a[^>]+><img[^>]+><\/a>[^<]+<p>[^<]+<a href="(\/index.php\/hospitals-in-[^.]+.html)"/is';
+//        preg_match_all($pattern, $body, $matches);
+//        $this->level1($urls, $matches);
+
+        //europe
+//        $pattern = '/<li>[^<]+<a[^>]+><img[^>]+><\/a>[^<]+<p>[^<]+<a href="(\/index.php\/hospitals-in-[^.]+.html)"/is';
+//        preg_match_all($pattern, $body, $matches);
+//        $this->level2($urls, $matches);
+
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-austria/details-and-maps-austria.html?limit=0';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-france/details-and-maps.html?limit=0';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-spain/details-and-maps.html?limit=0';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitales-in-netherland/maps-and-details-netherland.html?limit=0';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-turkey/details-and-maps.html?limit=0';
+
+        $this->level3($urls, $url);
+
+        print_r($urls);die;
         foreach($urls as $url) {
             try {
                 $model = new Hospital();
                 $model->url = $url;
                 $model->save();
             } catch (\Exception $e) {
-                
+
             }
         }
+    }
 
-//        $pattern3 = '/<br \/>[^<]*<strong>([^<]+):\s+<\/strong>\s+([^<]+)\s+/is';
-//        $pattern4 = '/"latitude":"([^"]+)","longitude":"\s?([^"]+)"/is';
+    protected function level1(&$urls, $matches) {
+        foreach ($matches[1] as $url) {
+            $url = $this->base_url . $url;
+            $request = $this->client->get($url);
+            $body = $request->getBody();
+            $pattern = '/<li>[^<]+<div[^>]+>[^<]+<div[^>]+>[^<]+<a[^>]+><img[^>]+><\/a><br \/>[^<]+<a href="(\/index.php\/hospitals-in-[^.]+.html)"/is';
+            preg_match_all($pattern, $body, $matches);
+            $this->level2($urls, $matches);
+        }
+    }
 
+    protected function level2(&$urls, $matches)
+    {
+        foreach ($matches[1] as $url1) {
+            $url1 = $this->base_url . $url1;
+            $request = $this->client->get($url1);
+            $body1 = $request->getBody();
+            $pa = '/<li class="item\d+"><a href="([^"]+)"><span>Details and maps[^<]*<\/span>/is';
+            preg_match($pa, $body1, $matches1);
+            try {
+                $details_url = $this->base_url . $matches1[1] . '?limit=0';
+            } catch (\Exception $e) {
+                print_r($matches1);
+//                    echo $body2 . PHP_EOL;
+                die($url1);
+            }
+            $this->level3($urls, $details_url);
+        }
+    }
+
+    /**
+     * @param $urls
+     * @param $details_url
+     * @param $matches2
+     * @return array
+     */
+    protected function level3(&$urls, $details_url)
+    {
+        $request = $this->client->get($details_url);
+        $body2 = $request->getBody();
+
+        $pattern2 = '/<a href="(\/index.php\/hospitals-[^\d]+\d+-[^.]+.html)">/is';
+        preg_match_all($pattern2, $body2, $matches2);
+        try {
+            $urls = array_merge($urls, $matches2[1]);
+            return array($request, $urls);
+        } catch (\Exception $e) {
+            print_r($matches2);
+//                    echo $body2 . PHP_EOL;
+            die($details_url);
+        }
     }
 }

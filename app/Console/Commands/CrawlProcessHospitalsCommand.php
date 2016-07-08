@@ -47,7 +47,7 @@ class CrawlProcessHospitalsCommand extends Command
             $urls = Hospital::whereBetween('id', array(intval($from), intval($to)))->get();;
         } else {
             $urls = Hospital::all();
-//            $urls = Hospital::all()->sortByDesc("id");;
+            $urls = Hospital::all()->sortByDesc("id");;
         }
 //        $urls = Hospital::whereBetween('id', array(3100, 3200))->get();;
         foreach($urls as $model) {
