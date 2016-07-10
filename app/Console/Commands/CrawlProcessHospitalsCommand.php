@@ -46,8 +46,11 @@ class CrawlProcessHospitalsCommand extends Command
         if (! is_null($from) && ! is_null($to)) {
             $urls = Hospital::whereBetween('id', array(intval($from), intval($to)))->get();;
         } else {
-            $urls = Hospital::all();
-            $urls = Hospital::all()->sortByDesc("id");;
+//            $urls = Hospital::all();
+//            $urls = Hospital::all()->sortByDesc("id");;
+            //$urls = Hospital::where('latitude', '')->orderBy("id", 'desd')->get();
+            $urls = Hospital::where('name', '')->orderBy("id", 'desd')->get();
+
         }
 //        $urls = Hospital::whereBetween('id', array(3100, 3200))->get();;
         foreach($urls as $model) {
@@ -59,14 +62,27 @@ class CrawlProcessHospitalsCommand extends Command
                 $client = new Client(['allow_redirects' => true,]);
                 $request = $client->get($model->url);
                 $body = $this->clean($request->getBody());
-                $pattern3 = '/<br \/><strong>([^<]+):<\/strong>([^<]+)/is';
+                $pattern3 = '/(?:<br\s?\/>)?<strong>([^<]+):?<\/strong.?>(?:<a[^>]+)?([^<]+)/is';
                 preg_match_all($pattern3, $body, $matches, PREG_SET_ORDER);
 
                 array_walk($matches, function(&$value) {
                     array_shift($value);
-                    $value = [$value[0] => $value[1]];
+                    $value = [trim($value[0],':') => $value[1]];
                 });
+                $matches = $this->normalizeMatches($matches);
                 $model->raw_data = json_encode($matches);
+                if (isset($matches['Name'])) {
+                    $model->name = $matches['Name'];
+                }
+                if (isset($matches['Telephone']) && $matches['Telephone'] != 'Not available') {
+                    $model->phone = $matches['Telephone'];
+                }
+                if (isset($matches['Adress'])) {
+                    $model->address = $matches['Adress'];
+                }
+                if (isset($matches['Code'])) {
+                    $model->zipcode = $matches['Code'];
+                }
                 $pattern4 = '/"latitude":"([^"]+)","longitude":"\s?([^"]+)"/is';
                 preg_match($pattern4, $body, $matches);
                 if (! empty($matches[1]) && ! empty($matches[1])) {
@@ -96,6 +112,20 @@ class CrawlProcessHospitalsCommand extends Command
         $body = preg_replace("/\s+>/", ">", $body);
         $body = preg_replace("/\s+</", "<", $body);
         $body = preg_replace("/\s+>/", ">", $body);
+        $body = str_replace("<strong><strong>", "<br /><strong>", $body);
         return $body;
+    }
+
+    private function normalizeMatches($matches)
+    {
+        $res = [];
+        foreach ($matches as $match) {
+            foreach ($match as $key => $val) {
+                if (substr($key, 0, 3) != 'Map') {
+                    $res[$key] = $val;
+                }
+            }
+        }
+        return $res;
     }
 }

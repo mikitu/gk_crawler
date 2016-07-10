@@ -59,15 +59,33 @@ class CrawlHospitalsCommand extends Command
 //        preg_match_all($pattern, $body, $matches);
 //        $this->level2($urls, $matches);
 
-        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-austria/details-and-maps-austria.html?limit=0';
-        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-france/details-and-maps.html?limit=0';
-        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-spain/details-and-maps.html?limit=0';
-        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitales-in-netherland/maps-and-details-netherland.html?limit=0';
-        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-turkey/details-and-maps.html?limit=0';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-austria/details-and-maps-austria.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-france/details-and-maps.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-spain/details-and-maps.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitales-in-netherland/maps-and-details-netherland.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-turkey/details-and-maps.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitals-in-bulgaria/details-and-maps-bulgaria-.html';
+        $url = $this->base_url . '/index.php/hospitals-in-europe/hospitales-in-belgium/maps-and-details-belgium.html';
+        $url = 'http://www.hospitalglobal.com/index.php/hospitals-in-europe/hospitals-in-united-kingdom/hospitals-in-england/details-and-maps-england.html';
+        $url = 'http://www.hospitalglobal.com/index.php/hospitals-in-europe/hospitals-in-united-kingdom/hospitals-in-northern-ireland/details-and-maps-northern-ireland.html';
+        $url = 'http://www.hospitalglobal.com/index.php/hospitals-in-europe/hospitals-in-united-kingdom/hospitals-in-scotland/details-and-maps-scotland.html';
+        $url = 'http://www.hospitalglobal.com/index.php/hospitals-in-europe/hospitals-in-united-kingdom/hospitals-in-wales/details-and-maps-wales.html';
+        $url = 'http://www.hospitalglobal.com/index.php/hospitals-in-europe/hospitals-in-russia/details-and-maps.html';
+        $url = 'http://www.hospitalglobal.com/index.php/hospitals-in-europe/hospitals-in-ukraine/details-and-maps-ukraine.html';
+//        $url = '';
+//        $url = '';
+//        $url = '';
+//        $url = '';
+//        $url = '';
+//        $url = '';
+//        $url = '';
+//        $url = '';
+//        $url = '';
 
+        $url .= '?limit=0';
         $this->level3($urls, $url);
 
-        print_r($urls);die;
+//        print_r($urls);die;
         foreach($urls as $url) {
             try {
                 $model = new Hospital();
