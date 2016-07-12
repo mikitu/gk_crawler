@@ -46,31 +46,69 @@ class CrawlProcessHospitalDetailsCommand extends Command
             if (empty($model->raw_data)) continue;
             $data = json_decode($model->raw_data, true);
             $this->updateModel($model, $data);
-            foreach($data as $val) {
-                $keys = array_merge($keys, $val);
-            }
+            $keys = array_merge($keys, $data);
         }
 //        array_unique($keys);
         print_r(array_keys($keys));
     }
 
-    private function updateModel($model, $data)
+    private function updateModel($model, $val)
     {
-        foreach($data as $val) {
+//        foreach($data as $val) {
             if (isset($val['Name'])) {
-                $model->name = $val['Name'];
+                $model->name = $this->cleanStr(trim($val['Name'], '>'));
             }
             if (isset($val['Telephone']) && $val['Telephone'] != 'Not available') {
-                $model->phone = $val['Telephone'];
+                $model->phone = $this->cleanStr($val['Telephone']);
             }
             if (isset($val['Adress'])) {
-                $model->address = $val['Adress'];
+                $model->address = $this->cleanStr($val['Adress']);
+            }
+            if (isset($val['Address'])) {
+                $model->address = $this->cleanStr($val['Address']);
             }
             if (isset($val['Code'])) {
-                $model->zipcode = $val['Code'];
+                $model->zipcode = $this->cleanStr($val['Code']);
+            }
+            if (isset($val['City'])) {
+                $model->city = $this->cleanStr($val['City']);
+            }
+            if (isset($val['Town'])) {
+                $model->city = $this->cleanStr($val['Town']);
+            }
+            if (isset($val['Province'])) {
+                $model->city = $this->cleanStr($val['Province']);
+            }
+            $country_found = false;
+            if (isset($val['Country'])) {
+                $country_found = true;
+                $model->country = $this->cleanStr($val['Country']);
+            }
+            if (isset($val['Nation'])) {
+                $country_found = true;
+                $model->country = $this->cleanStr($val['Nation']);
+            }
+            if (! $country_found) {
+                $model->country = $this->identifyByUrl($model->url);
             }
             $model->save();
-        }
+//        }
         
+    }
+
+    private function cleanStr($str)
+    {
+        $str = str_replace('&nbsp;', ' ', $str);
+        $str = str_replace('\u00a0', ' ', $str);
+        $str = trim($str);
+        $str = html_entity_decode($str);
+        $str = mb_convert_case($str, MB_CASE_TITLE, "UTF-8");
+        return $str;
+    }
+
+    private function identifyByUrl($url)
+    {
+        preg_match('#hospitals-in-([^/]+)/details#', $url, $matches);
+        return ucwords(str_replace('-', ' ' , $matches[1]));
     }
 }

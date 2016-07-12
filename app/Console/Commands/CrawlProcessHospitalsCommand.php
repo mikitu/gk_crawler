@@ -46,15 +46,20 @@ class CrawlProcessHospitalsCommand extends Command
         if (! is_null($from) && ! is_null($to)) {
             $urls = Hospital::whereBetween('id', array(intval($from), intval($to)))->get();;
         } else {
-//            $urls = Hospital::all();
+            $urls = Hospital::all();
 //            $urls = Hospital::all()->sortByDesc("id");;
             //$urls = Hospital::where('latitude', '')->orderBy("id", 'desd')->get();
-            $urls = Hospital::where('name', '')->orderBy("id", 'desd')->get();
+//            $urls = Hospital::where('name', '')->orderBy("id", 'desd')->get();
+//            $urls = Hospital::where('country', '')->orderBy("id", 'desd')->get();
+            $urls = Hospital::where('city', '')->orderBy("id", 'desd')->get();
+//            $urls = Hospital::where('raw_data', 'LIKE', '[%')->orderBy("id", 'desd')->get();
 
         }
 //        $urls = Hospital::whereBetween('id', array(3100, 3200))->get();;
+        $total = count($urls);
+        $this->info("Total: " . $total);
         foreach($urls as $model) {
-            if (! empty($model->latitude)) continue;
+//            if (! empty($model->latitude)) continue;
             echo $model->url.PHP_EOL;
             $model->url = str_replace($base_url, '', $model->url);
             $model->url = $base_url . $model->url;
@@ -67,12 +72,12 @@ class CrawlProcessHospitalsCommand extends Command
 
                 array_walk($matches, function(&$value) {
                     array_shift($value);
-                    $value = [trim($value[0],':') => $value[1]];
+                    $value = [trim($value[0],':') => trim($value[1], '<')];
                 });
                 $matches = $this->normalizeMatches($matches);
                 $model->raw_data = json_encode($matches);
                 if (isset($matches['Name'])) {
-                    $model->name = $matches['Name'];
+                    $model->name = trim($matches['Name'], '>');
                 }
                 if (isset($matches['Telephone']) && $matches['Telephone'] != 'Not available') {
                     $model->phone = $matches['Telephone'];
@@ -94,6 +99,8 @@ class CrawlProcessHospitalsCommand extends Command
             } catch (\Exception $e) {
                 $this->info($e->getMessage() . " " . $e->getLine());
             }
+            $total--;
+            $this->info("Remaining: " . $total);
         }
     }
 
@@ -107,12 +114,19 @@ class CrawlProcessHospitalsCommand extends Command
         $body = preg_replace("/\n/", "", $body);
         $body = preg_replace("/\t/", " ", $body);
         $body = preg_replace("/\s+/", " ", $body);
-        $body = preg_replace("/> </", "><", $body);
         $body = preg_replace("/>\s+/", ">", $body);
         $body = preg_replace("/\s+>/", ">", $body);
         $body = preg_replace("/\s+</", "<", $body);
         $body = preg_replace("/\s+>/", ">", $body);
+        $body = preg_replace("/> </", "><", $body);
+        $body = str_replace("&nbsp;", " ", $body);
+        $body = str_replace('\u00a0', " ", $body);
+        $body = str_replace("> <", "><", $body);
+        $body = str_replace("> <", "><", $body);
+
         $body = str_replace("<strong><strong>", "<br /><strong>", $body);
+        $body = str_replace("</strong></strong>", "</strong>", $body);
+
         return $body;
     }
 

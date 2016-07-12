@@ -13,8 +13,8 @@ class ChangeCityFieldAndAddCountryCode extends Migration
     public function up()
     {
         Schema::table('hospital', function (Blueprint $table) {
-            $table->unsignedInteger('city')->nullable()->change();
-            $table->renameColumn('city', 'city_id');
+            $table->string('country');
+            $table->unsignedInteger('city_id')->nullable();
             $table->unsignedInteger('country_id')->nullable();
             $table->foreign('country_id')
                 ->references('id')->on('country');
