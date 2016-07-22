@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
          Commands\CrawlProcessHospitalsCommand::class,
          Commands\CrawlProcessHospitalDetailsCommand::class,
          Commands\ValidateLatLongCommand::class,
+         Commands\CrawlHospitalsGermanyCommand::class,
     ];
 
     /**
