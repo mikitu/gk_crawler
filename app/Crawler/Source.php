@@ -22,6 +22,7 @@ abstract class Source implements SourceInterface
      * @var
      */
     protected $validator;
+    protected $client;
     /**
      * @var Model
      */
@@ -45,6 +46,7 @@ abstract class Source implements SourceInterface
      */
     public function run(Client $client)
     {
+        $this->client = $client;
         $res = $this->fetchData($client);
         $this->saveData($res);
         $this->log($res);
@@ -79,9 +81,15 @@ abstract class Source implements SourceInterface
             $this->save($k, $item);
         }
     }
+
+    /**
+     * @param $index
+     * @param array $item
+     */
     public function save($index, array $item)
     {
         if (empty($item['city'])) {
+            echo PHP_EOL . "City is empty!!! " . $item['url'] . PHP_EOL;
             return;
         }
         $country_id = $this->getCountryId($item['country_code']);
@@ -94,24 +102,33 @@ abstract class Source implements SourceInterface
         if (empty($item['type'])) {
             $item['type'] = '';
         }
-        $dbModel->updateOrCreate([
+        $instance = $dbModel->firstOrNew([
             'source_id'     => $this->sourceData['id'],
             'country_id'    => $country_id,
             'city_id'       => $city_id,
             'zipcode'       => $item['zipcode'],
-        ], [
+        ]);
+        $type = $item['type'];
+        if(! empty($instance->typology) && ! empty($type)) {
+            $types = explode(',', $instance->typology);
+            if(! in_array($type, $types)) {
+                $types[] = $type;
+            }
+            $type = implode(',', $types);
+        }
+        $instance->fill([
             'source_id'     => $this->sourceData['id'],
             'country_id'    => $country_id,
             'city_id'       => $city_id,
             'name'          => $item['name'],
-            'typology'      => $item['type'],
+            'typology'      => $type,
             'address'       => $item['address'],
             'phone'         => $item['phone'],
             'zipcode'       => $item['zipcode'],
             'latitude'      => $item['latitude'],
             'longitude'     => $item['longitude'],
             'openinghours'  => $item['openinghours'],
-        ]);
+        ])->save();
     }
 
     /**
@@ -197,6 +214,10 @@ abstract class Source implements SourceInterface
         return array($body, $page_meta, $res->getStatusCode());
     }
 
+    /**
+     * @param $body
+     * @param $body1
+     */
     protected function appendResults(&$body, $body1)
     {
         foreach ($body1 as $result) {
