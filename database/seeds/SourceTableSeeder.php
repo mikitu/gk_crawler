@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use seeds\ds\AholdBelgium;
 use seeds\ds\AholdNetherlands;
 use seeds\ds\AuchanFrance;
 use seeds\ds\AuchanHungary;
@@ -18,6 +19,8 @@ use seeds\ds\CarrefourTaiwan;
 use seeds\ds\CarrefourTunisia;
 use seeds\ds\CarrefourTurkey;
 use seeds\ds\Coop;
+use seeds\ds\DelhaizeBelgium;
+use seeds\ds\EtosNetherlands;
 use seeds\ds\Kaufland;
 use seeds\ds\Lidl;
 use seeds\ds\LidlGermany;
@@ -85,6 +88,9 @@ class SourceTableSeeder extends Seeder
         $this->seed(new SevenEleven());
         $this->seed(new Coop());
         $this->seed(new AholdNetherlands());
+        $this->seed(new EtosNetherlands());
+        $this->seed(new AholdBelgium());
+        $this->seed(new DelhaizeBelgium());
     }
 
     protected function seed($ds)
