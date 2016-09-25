@@ -30,38 +30,17 @@ class DelhaizeBelgium extends Source
      */
     public function normalize(array $item)
     {
-        $address = explode(',', $item['address']);
-        $city = trim(array_pop($address));
-        $zipcode = trim(array_pop($address));
-        $address = implode(',', $address);
-        $latlong = explode(';', str_replace(',', ';', $item['latlong']));
-        if (strstr($latlong[0],'Lat')) {
-            $lat = trim(str_replace('Lat', '', $latlong[0]));
-            $long = trim(str_replace('Long', '', $latlong[1]));
-        } else {
-            $lat = trim(str_replace('Lat', '', $latlong[1]));
-            $long = trim(str_replace('Long', '', $latlong[0]));
-        }
-//        $lat = str_replace('. ', '', $lat);
-        $lat = str_replace('.:', '', $lat);
-        $lat = preg_replace('/[^\d.]+/', '', $lat);
-//        $long = str_replace('. ', '', $long);
-        $long = str_replace('.:', '', $long);
-        $long = preg_replace('/[^\d.]+/', '', $long);
-        if (! $city) {
-            return false;
-        }
-
         return array_map('trim', [
             'country_code'  => $this->sourceData['country_code'],
-            'city'          => $city,
+            'city'          => $item['city'],
             'name'          => $item['name'],
-            'address'       => $address,
-            'phone'         => $item['phones'],
-            'zipcode'       => $zipcode,
-            'latitude'      => trim($lat),
-            'longitude'     => trim($long),
-            'openinghours'  =>$item['hours'],
+            'address'       => $item['address'],
+            'phone'         => $item['phone'],
+            'zipcode'       => $item['zipcode'],
+            'latitude'      => $item['lat'],
+            'longitude'     => $item['lng'],
+            'openinghours'  =>$item['openinghours'],
+            'type'  =>$item['type'],
         ]);
     }
 
@@ -70,9 +49,43 @@ class DelhaizeBelgium extends Source
         $body = $this->clean($body);
         $pattern = '/<script type="text\/javascript">[^<]+name=\'(?<id>[^\']+)\';[^<]+descr=\'(?<name>[^\']+)\';[^<]+addr1="(?<addr1>[^\"]+)";[^<]+addr2="(?<addr2>[^\"]+)";[^<]+town=\'(?<city>[^\']+)\';[^<]+post=\'(?<postcode>[^\']+)\';[^<]+lat = (?<lat>\d+\.\d+);[^<]+lon = (?<lng>\d+\.\d+);[^<]+storeType=\'(?<type>[^\']+)\';[^<]+storeType\); <\/script>/';
         preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
+        $items  = [];
+        foreach ($matches as $match) {
+            $details = $this->getDetails('http://shop.delhaize.be/en-be/storelocator/viewStoreDetail?poiName=' . $match['id']);
+            $items[] = [
+                'name' => $match['name'],
+                'address' => $match['addr1'] . ' ' . $match['addr2'],
+                'city' => $match['city'],
+                'zipcode' => $match['postcode'],
+                'lat' => $match['lat'],
+                'lng' => $match['lng'],
+                'type' => $match['type'],
+                'openinghours' => $details['hours'],
+                'phone' => $details['phone'],
+            ];
+        }
 
+        return $items;
+    }
+    private function getDetails($url)
+    {
+        $res = $this->client->request("GET", $url);
+        $body = $this->clean($res->getBody());
+        $pattern ='/<span class="checkMonth" ><span class="checkDay"[^>]+>(?<day>[^<]+)<\/span>[^<]+<\/span>(<div class="[^"]+">)?<span( class="storeClosed")?>(?<hours>[^<]+)/is';
+        preg_match_all($pattern, $body, $matches, PREG_SET_ORDER);
+        $hours = [];
+        foreach ($matches as $match) {
+            $hours[] = substr($match['day'], 0, 2) . '.: ' . str_replace('-', ' - ', $match['hours']);
+        }
+        $su = array_shift($hours);
+        $hours[] = $su;
+        $openinghours = implode('; ', $hours);
+        $phone = '';
+        preg_match('/<strong>Telephone<\/strong><\/td><td>([^<]+)<\/td>/iUs', $body, $match);
+        if (! empty($match[1])) {
+            $phone = $match[1];
+        }
 
-        print_r($matches);die;
-        return json_decode($match[1], true);
+        return ['hours' => $openinghours, 'phone' => $phone];
     }
 }
