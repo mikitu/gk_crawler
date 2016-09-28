@@ -21,6 +21,7 @@ use seeds\ds\CarrefourTurkey;
 use seeds\ds\Coop;
 use seeds\ds\DelhaizeBelgium;
 use seeds\ds\EtosNetherlands;
+use seeds\ds\FoodLion;
 use seeds\ds\Kaufland;
 use seeds\ds\Lidl;
 use seeds\ds\LidlGermany;
@@ -91,6 +92,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new EtosNetherlands());
         $this->seed(new AholdBelgium());
         $this->seed(new DelhaizeBelgium());
+        $this->seed(new FoodLion());
     }
 
     protected function seed($ds)
