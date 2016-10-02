@@ -2,7 +2,7 @@
 
 namespace seeds\ds;
 
-class PingoDoce
+class SuperIndo
 {
     public $headers = [];
     public $data = [];

@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
          Commands\CrawlHospitalsGermanyCommand::class,
          Commands\CrawlEmbassyCommand::class,
          Commands\CrawlProcessEmbassyCommand::class,
+         Commands\SeleniumTestCommand::class,
     ];
 
     /**

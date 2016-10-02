@@ -32,6 +32,7 @@ use seeds\ds\SevenEleven;
 use seeds\ds\Spar;
 use seeds\ds\SparGetmany;
 use seeds\ds\SparItaly;
+use seeds\ds\Tempo;
 
 class SourceTableSeeder extends Seeder
 {
@@ -95,6 +96,8 @@ class SourceTableSeeder extends Seeder
         $this->seed(new DelhaizeBelgium());
         $this->seed(new FoodLion());
         $this->seed(new Hannaford());
+        $this->seed(new Tempo());
+
     }
 
     protected function seed($ds)
