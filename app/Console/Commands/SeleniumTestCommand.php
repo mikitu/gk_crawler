@@ -32,10 +32,10 @@ class SeleniumTestCommand extends Command
     public function handle()
     {
         $host = 'http://localhost:4444/wd/hub';
-        $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
-        $driver->get("https://www.tempocentar.com/lokator");
+        $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
+        $driver->get("http://www.ab.gr/storelocator");
         $grad = $driver->findElement(WebDriverBy::id('grad'));
-        $result = $driver->executeScript("return data");
+        $result = $driver->executeScript("return latitudes");
         var_dump($result);
         $driver->quit();
     }
