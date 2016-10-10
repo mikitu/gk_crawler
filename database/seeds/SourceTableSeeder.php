@@ -1,5 +1,6 @@
 <?php
 
+use seeds\ds\AlphaBeta;
 use Illuminate\Database\Seeder;
 use seeds\ds\AholdBelgium;
 use seeds\ds\AholdNetherlands;
@@ -96,7 +97,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new DelhaizeBelgium());
         $this->seed(new FoodLion());
         $this->seed(new Hannaford());
-        $this->seed(new Tempo());
+        $this->seed(new AlphaBeta());
 
     }
 

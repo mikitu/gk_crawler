@@ -22,6 +22,7 @@ abstract class Source implements SourceInterface
      * @var
      */
     protected $validator;
+    
     protected $client;
     /**
      * @var Model
@@ -32,7 +33,6 @@ abstract class Source implements SourceInterface
      * Source constructor.
      * @param Model $source
      * @param Model $dbModel
-     * @internal param array $data
      */
     public function __construct(Model $source, Model $dbModel)
     {
@@ -55,7 +55,7 @@ abstract class Source implements SourceInterface
     /**
      * @param array $data
      */
-    private function log(array $data)
+    protected function log(array $data)
     {
         echo "save to history";
     }
@@ -80,6 +80,7 @@ abstract class Source implements SourceInterface
             };
             $this->save($k, $item);
         }
+        $this->postSave();
     }
 
     /**
@@ -223,5 +224,12 @@ abstract class Source implements SourceInterface
         foreach ($body1 as $result) {
             $body[] = $result;
         }
+    }
+
+    /**
+     * executed after data is saved in db
+     */
+    protected function postSave()
+    {
     }
 }
