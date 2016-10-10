@@ -28,6 +28,7 @@ use seeds\ds\Hannaford;
 use seeds\ds\Kaufland;
 use seeds\ds\Lidl;
 use seeds\ds\LidlGermany;
+use seeds\ds\MegaImage;
 use seeds\ds\Metro;
 use seeds\ds\Sainsburys;
 use seeds\ds\SevenEleven;
@@ -100,6 +101,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new Hannaford());
         $this->seed(new AlphaBeta());
         $this->seed(new EnaFood());
+        $this->seed(new MegaImage());
 
     }
 
