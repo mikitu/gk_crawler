@@ -21,6 +21,7 @@ use seeds\ds\CarrefourTunisia;
 use seeds\ds\CarrefourTurkey;
 use seeds\ds\Coop;
 use seeds\ds\DelhaizeBelgium;
+use seeds\ds\EnaFood;
 use seeds\ds\EtosNetherlands;
 use seeds\ds\FoodLion;
 use seeds\ds\Hannaford;
@@ -98,6 +99,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new FoodLion());
         $this->seed(new Hannaford());
         $this->seed(new AlphaBeta());
+        $this->seed(new EnaFood());
 
     }
 
