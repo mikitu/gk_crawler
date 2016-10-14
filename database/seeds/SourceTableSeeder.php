@@ -30,6 +30,7 @@ use seeds\ds\Lidl;
 use seeds\ds\LidlGermany;
 use seeds\ds\MegaImage;
 use seeds\ds\Metro;
+use seeds\ds\Penny;
 use seeds\ds\Sainsburys;
 use seeds\ds\SevenEleven;
 use seeds\ds\Spar;
@@ -102,6 +103,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new AlphaBeta());
         $this->seed(new EnaFood());
         $this->seed(new MegaImage());
+        $this->seed(new Penny());
 
     }
 
