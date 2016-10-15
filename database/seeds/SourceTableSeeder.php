@@ -19,6 +19,7 @@ use seeds\ds\CarrefourSpain;
 use seeds\ds\CarrefourTaiwan;
 use seeds\ds\CarrefourTunisia;
 use seeds\ds\CarrefourTurkey;
+use seeds\ds\CbaHungary;
 use seeds\ds\Coop;
 use seeds\ds\DelhaizeBelgium;
 use seeds\ds\EnaFood;
@@ -103,7 +104,14 @@ class SourceTableSeeder extends Seeder
         $this->seed(new AlphaBeta());
         $this->seed(new EnaFood());
         $this->seed(new MegaImage());
-        $this->seed(new Penny());
+        $penny = new Penny;
+        foreach ($penny->urls as $country_code => $url) {
+            $ds = new Penny();
+            $ds->country_code = $country_code;
+            $ds->url = $url;
+            $this->seed($ds);
+        }
+        $this->seed(new CbaHungary());
 
     }
 
