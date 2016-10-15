@@ -90,7 +90,8 @@ abstract class Source implements SourceInterface
     public function save($index, array $item)
     {
         if (empty($item['city'])) {
-            echo PHP_EOL . "City is empty!!! " . $item['url'] . PHP_EOL;
+            echo PHP_EOL . "City is empty!!! " . ($item['url'] ?? $item['name']). PHP_EOL;
+            print_r($item);
             return;
         }
         $country_id = $this->getCountryId($item['country_code']);
