@@ -20,6 +20,7 @@ use seeds\ds\CarrefourTaiwan;
 use seeds\ds\CarrefourTunisia;
 use seeds\ds\CarrefourTurkey;
 use seeds\ds\CbaHungary;
+use seeds\ds\CbaPoland;
 use seeds\ds\CbaRomania;
 use seeds\ds\Coop;
 use seeds\ds\DelhaizeBelgium;
@@ -114,6 +115,7 @@ class SourceTableSeeder extends Seeder
         }
         $this->seed(new CbaHungary());
         $this->seed(new CbaRomania());
+        $this->seed(new CbaPoland());
 
     }
 
