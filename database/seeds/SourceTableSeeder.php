@@ -35,6 +35,7 @@ use seeds\ds\LidlGermany;
 use seeds\ds\MegaImage;
 use seeds\ds\Metro;
 use seeds\ds\Penny;
+use seeds\ds\PennyGermany;
 use seeds\ds\Sainsburys;
 use seeds\ds\SevenEleven;
 use seeds\ds\Spar;
@@ -118,6 +119,7 @@ class SourceTableSeeder extends Seeder
         $this->seed(new CbaRomania());
         $this->seed(new CbaPoland());
         $this->seed(new CbaSlovakia());
+        $this->seed(new PennyGermany());
 
     }
 
